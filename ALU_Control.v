@@ -15,4 +15,11 @@ wire    [6:0]   funct7;
 wire    [2:0]   funct3;
 assign  {funct7, funct3} = funct_i;
 
+// Assignments
+assign  ALUCtrl_o = (ALUOp_i == `R_OP && funct3 == 3'b000 && funct7 == 7'b0)?        `ADD:
+                    (ALUOp_i == `R_OP && funct3 == 3'b000 && funct7 == 7'b0100000)?  `SUB:
+                    (ALUOp_i == `R_OP && funct3 == 3'b000 && funct7 == 7'b1)?        `MUL:
+                    (ALUOp_i == `R_OP && funct3 == 3'b110)?                          `OR:
+                    (ALUOp_i == `R_OP && funct3 == 3'b111)?                          `AND:ADD;
+
 endmodule
