@@ -11,5 +11,6 @@ output  [31:0]  data_o;
 // Wires and Registers
 
 // Assignment
+assign data_o = data_i * 2;
 
 endmodule

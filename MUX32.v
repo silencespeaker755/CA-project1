@@ -15,5 +15,7 @@ output  [31:0]  data_o;
 // Wires and Registers
 
 // Assignment
+assign data_o = (select_i == 0)?    data1_i:
+                (select_i == 1)?    data2_i:0;
 
 endmodule
