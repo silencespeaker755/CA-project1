@@ -19,6 +19,7 @@
 // ALUSrc constant
 `define RS2         1'b0
 `define IMM         1'b1
+parameter instr_length = 32'b100;
 
 module CPU
 (
@@ -30,9 +31,41 @@ module CPU
 input         clk_i;
 input         start_i;
 
+ALU_Control ALU_Control(
+    .funct_i(),
+    .ALUOp_i(),
+    .ALUCtrl_o()
+);
+
+ALU ALU(
+    .data1_i(),
+    .data2_i(),
+    .ALU_Ctrl_i(),
+    .data_o(),
+    .Zero_o()
+);
+
+Control Control(
+    .Op_i(),
+    .Branch_o(),
+    .MemRead_o(),
+    .MemtoReg_o(),
+    .ALUOp_o(),
+    .MemWrite_o(),
+    .ALUSrc_o(),
+    .RegWrite_o()
+);
+
+Adder Adder(
+    .data1_in(),
+    .data2_in(instr_length),
+    .data_o()
+);
+
+
 PC PC(
-    .clk_i          (),
-    .start_i        (),
+    .clk_i          (clk_i),
+    .start_i        (start_i),
     .PCWrite_i      (),
     .pc_i           (),
     .pc_o           ()
@@ -56,11 +89,41 @@ Registers Registers(
 
 Data_Memory Data_Memory(
     .clk_i          (),
-
     .addr_i         (),
     .MemWrite_i     (),
     .data_i         (),
     .data_o         ()
+);
+
+Sign_Extend Sign_Extend(
+    .data_i(),
+    .data_o()
+);
+
+Shifter Shifter(
+    .data_i(),
+    .data_o()
+);
+
+MUX32 Imm_RD2_MUX32(
+    .data1_i(),
+    .data2_i(),
+    .select_i(),
+    .data_o()
+);
+
+MUX32 MEM_ALU_MUX32(
+    .data1_i(),
+    .data2_i(),
+    .select_i(),
+    .data_o()
+);
+
+MUX32 PC_MUX32(
+    .data1_i(),
+    .data2_i(),
+    .select_i(),
+    .data_o()
 );
 
 endmodule
