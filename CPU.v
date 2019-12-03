@@ -4,21 +4,19 @@
 `define LOAD_TYPE   7'b0000011
 `define STORE_TYPE  7'b0100011
 `define BRANCH_TYPE 7'b1100011
-// MemtoReg constant
-`define MEM         1'b0
-`define REG         1'b1
+// MemtoReg and ALUSrc constant
+`define MEM         1'b1
+`define REG         1'b0
+`define IMM         1'b1
 // ALUOp constant
-`define RI_TYPE     2'b10
-`define OTHER       2'b00
+`define R_OP        2'b10
+`define OTHER_OP    2'b00
 // ALUCtrl constant
 `define ADD         3'b010
 `define SUB         3'b110
 `define MUL         3'b011
 `define AND         3'b000
 `define OR          3'b001
-// ALUSrc constant
-`define RS2         1'b0
-`define IMM         1'b1
 parameter instr_length = 32'b100;
 
 module CPU
