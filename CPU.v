@@ -162,7 +162,7 @@ Data_Memory Data_Memory(
 );
 
 Branch_Gate Branch_Gate(
-    .Branch_i       (Branch_o),
+    .Branch_i       (Branch),
     .Zero_i         (Zero_o),
     .PCSrc_o        (PCSrc)
 );
