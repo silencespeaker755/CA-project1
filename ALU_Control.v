@@ -20,6 +20,6 @@ assign  ALUCtrl_o = (ALUOp_i == `R_OP && funct3 == 3'b000 && funct7 == 7'b0)?   
                     (ALUOp_i == `R_OP && funct3 == 3'b000 && funct7 == 7'b0100000)?  `SUB:
                     (ALUOp_i == `R_OP && funct3 == 3'b000 && funct7 == 7'b1)?        `MUL:
                     (ALUOp_i == `R_OP && funct3 == 3'b110)?                          `OR:
-                    (ALUOp_i == `R_OP && funct3 == 3'b111)?                          `AND:ADD;
+                    (ALUOp_i == `R_OP && funct3 == 3'b111)?                          `AND:`ADD;
 
 endmodule
