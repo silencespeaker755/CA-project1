@@ -62,9 +62,14 @@ wire            RegWrite;
 // Register and Immediate
 wire    [31:0]  RS1data;
 wire    [31:0]  RS2data;
+wire    [31:0]  RDdata;
 wire    [31:0]  imm;
+wire    [31:0]  RS2data_imm;
 // ALU
 wire            Zero;
+wire    [31:0]  ALUResult;
+// Data Memory
+wire    [31:0]  Memdata;
 
 // Module declaration
 // IF stage
@@ -110,7 +115,7 @@ Registers Registers(
     .RS1addr_i      (RS1addr),
     .RS2addr_i      (RS2addr),
     .RDaddr_i       (RDaddr),
-    .RDdata_i       (),
+    .RDdata_i       (RDdata),
     .RegWrite_i     (RegWrite),
     .RS1data_o      (RS1data),
     .RS2data_o      (RS2data)
@@ -125,14 +130,14 @@ MUX32 RS2_IMM_MUX32(
     .data1_i        (RS2data),
     .data2_i        (imm),
     .select_i       (ALUSrc),
-    .data_o         ()
+    .data_o         (RS2data_imm)
 );
 
 ALU ALU(
-    .data1_i        (),
-    .data2_i        (),
-    .ALUCtrl_i     (ALUCtrl),
-    .data_o         (),
+    .data1_i        (RS1data),
+    .data2_i        (RS2data_imm),
+    .ALUCtrl_i      (ALUCtrl),
+    .data_o         (ALUResult),
     .Zero_o         (Zero)
 );
 
@@ -144,16 +149,16 @@ ALU_Control ALU_Control(
 
 Adder Adder2(
     .data1_in       (pc),
-    .data2_in       (),
+    .data2_in       (ALUResult),
     .data_o         (pc_branch)
 );
 // MEM stage
 Data_Memory Data_Memory(
-    .clk_i          (),
-    .addr_i         (),
-    .MemWrite_i     (),
-    .data_i         (),
-    .data_o         ()
+    .clk_i          (clk_i),
+    .addr_i         (ALUResult),
+    .MemWrite_i     (MemWrite),
+    .data_i         (RS2data),
+    .data_o         (Memdata)
 );
 
 Branch_Gate Branch_Gate(
@@ -162,11 +167,11 @@ Branch_Gate Branch_Gate(
     .PCSrc_o        (PCSrc)
 );
 // WB stage
-MUX32 MEM_ALU_MUX32(
-    .data1_i        (),
-    .data2_i        (),
-    .select_i       (),
-    .data_o         ()
+MUX32 ALU_MEM_MUX32(
+    .data1_i        (ALUResult),
+    .data2_i        (Memdata),
+    .select_i       (MemtoReg),
+    .data_o         (RDdata)
 );
 
 endmodule

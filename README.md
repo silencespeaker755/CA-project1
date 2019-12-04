@@ -7,6 +7,8 @@
 
 # Finished work
 1. Implement basic modules, i.e. Adder.v, ALU.v, ...
+1. Connect wire in CPU.v
 
 # TODO List
-1. Connect wire in CPU.v
+1. Check whether the wires in CPU.v works(we have testdata to use)
+2. Implement Pipeline Registers between stages
