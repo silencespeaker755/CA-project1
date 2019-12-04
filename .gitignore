@@ -1,2 +1,5 @@
 CPU_1.out
 CPU_2.out
+.gitignore
+.DS_STORE
+testdata/.DS_STORE

@@ -37,10 +37,10 @@ initial begin
     // TODO: initialize pipeline registers
     
     // Load instructions into instruction memory
-    $readmemb("../testdata/instruction.txt", CPU.Instruction_Memory.memory);
+    $readmemb("../testdata/Fibonacci_instruction.txt", CPU.Instruction_Memory.memory);
     
     // Open output file
-    outfile = $fopen("../testdata/output.txt") | 1;
+    outfile = $fopen("../testdata/Fibonacci_output.txt") | 1;
     
     // Set Input n into data memory at 0x00
     CPU.Data_Memory.memory[0] = 8'h5;       // n = 5 for example
