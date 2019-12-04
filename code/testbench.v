@@ -15,6 +15,10 @@ CPU CPU(
 );
   
 initial begin
+    // Generate .vcd file for gtkwave
+    $dumpfile("debug.vcd");
+    $dumpvars;
+
     counter = 0;
     stall = 0;
     flush = 0;

@@ -10,8 +10,8 @@
 1. Connect wire in CPU.v
 
 # TODO List
-1. Check whether the wires in CPU.v works(we have testdata to use)
 2. Implement Pipeline Registers between stages
+3. Check the reason why the code work well with instruction.txt but halt when executing Fibnocci\_instruction.txt
 
 HW's Q&A
 https://cool.ntu.edu.tw/courses/340/assignments/4349

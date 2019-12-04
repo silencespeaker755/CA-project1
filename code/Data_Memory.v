@@ -1,7 +1,6 @@
 module Data_Memory
 (
     clk_i, 
-
     addr_i, 
     MemWrite_i,
     data_i,
