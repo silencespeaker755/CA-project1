@@ -127,7 +127,7 @@ Registers Registers(
     .RS2data_o      (RS2data)
 );
 
-Sign_Extend Sign_Extend(
+Imm_Gen Imm_Gen(
     .data_i         (instr),
     .data_o         (imm)
 );
