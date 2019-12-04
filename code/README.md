@@ -12,3 +12,6 @@
 # TODO List
 1. Check whether the wires in CPU.v works(we have testdata to use)
 2. Implement Pipeline Registers between stages
+
+HW's Q&A
+https://cool.ntu.edu.tw/courses/340/assignments/4349
