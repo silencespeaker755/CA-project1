@@ -72,6 +72,10 @@ wire    [31:0]  ALUResult;
 // Data Memory
 wire    [31:0]  Memdata;
 
+// without pipeline
+assign PCWrite = 1;
+
+
 // Module declaration
 // IF stage
 MUX32 PC_MUX32(
@@ -83,6 +87,7 @@ MUX32 PC_MUX32(
 
 PC PC(
     .clk_i          (clk_i),
+    .rst_i          (start_i),
     .start_i        (start_i),
     .PCWrite_i      (PCWrite),
     .pc_i           (pc_next),
