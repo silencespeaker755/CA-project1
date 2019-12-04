@@ -18,7 +18,6 @@
 `define MUL         3'b011
 `define AND         3'b000
 `define OR          3'b001
-parameter instr_length = 32'b100;
 
 module CPU
 (
@@ -30,6 +29,7 @@ module CPU
 input           clk_i;
 input           start_i;
 
+parameter instr_length = 32'b100;
 // Wires and Registers
 // PC
 wire            PCWrite;
@@ -67,6 +67,7 @@ wire    [31:0]  imm;
 wire    [31:0]  RS2data_imm;
 // ALU
 wire            Zero;
+wire    [2:0]   ALUCtrl;
 wire    [31:0]  ALUResult;
 // Data Memory
 wire    [31:0]  Memdata;
