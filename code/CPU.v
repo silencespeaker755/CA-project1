@@ -65,6 +65,8 @@ wire    [31:0]  RS2data;
 wire    [31:0]  RDdata;
 wire    [31:0]  imm;
 wire    [31:0]  RS2data_imm;
+// Shift
+wire    [31:0]  branch_distance;
 // ALU
 wire            Zero;
 wire    [2:0]   ALUCtrl;
@@ -78,12 +80,6 @@ assign PCWrite = 1;
 
 // Module declaration
 // IF stage
-MUX32 PC_MUX32(
-    .data1_i        (pc_plus_four),
-    .data2_i        (pc_branch),
-    .select_i       (PCSrc),
-    .data_o         (pc_next)
-);
 
 PC PC(
     .clk_i          (clk_i),
@@ -98,6 +94,13 @@ Adder Adder1(
     .data1_in       (pc),
     .data2_in       (instr_length),
     .data_o         (pc_plus_four)
+);
+
+MUX32 PC_MUX32(
+    .data1_i        (pc_plus_four),
+    .data2_i        (pc_branch),
+    .select_i       (PCSrc),
+    .data_o         (pc_next)
 );
 
 Instruction_Memory Instruction_Memory(
@@ -153,9 +156,13 @@ ALU_Control ALU_Control(
     .ALUCtrl_o      (ALUCtrl)
 );
 
+Shift Shift(
+    .data_i(imm),
+    .data_o(branch_distance)
+);
 Adder Adder2(
     .data1_in       (pc),
-    .data2_in       (ALUResult),
+    .data2_in       (branch_distance),
     .data_o         (pc_branch)
 );
 // MEM stage
@@ -169,7 +176,7 @@ Data_Memory Data_Memory(
 
 Branch_Gate Branch_Gate(
     .Branch_i       (Branch),
-    .Zero_i         (Zero_o),
+    .Zero_i         (Zero),
     .PCSrc_o        (PCSrc)
 );
 // WB stage

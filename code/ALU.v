@@ -14,6 +14,8 @@ input   [2:0]       ALUCtrl_i;
 output  [31:0]      data_o;
 output              Zero_o;
 
+
+
 // Wires and Registers
 assign Zero_o  =   (data1_i == data2_i)? 1:0;
 assign data_o  =   (ALUCtrl_i == `ADD)? data1_i + data2_i:
@@ -21,5 +23,6 @@ assign data_o  =   (ALUCtrl_i == `ADD)? data1_i + data2_i:
                    (ALUCtrl_i == `AND)? data1_i & data2_i:
                    (ALUCtrl_i == `SUB)? data1_i - data2_i:
                    (ALUCtrl_i == `MUL)? data1_i * data2_i:0;
+
 
 endmodule

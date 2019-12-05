@@ -10,7 +10,8 @@ input       Branch_i;
 input       Zero_i;
 output      PCSrc_o;
 
+
 // Assignment
-assign  PCSrc_o = (Branch_i == 1 && Zero_i == 1)? 1:0;
+assign  PCSrc_o = ((Branch_i == 1) && (Zero_i == 1))? 1:0;
 
 endmodule

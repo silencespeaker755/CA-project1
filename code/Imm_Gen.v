@@ -12,6 +12,7 @@ output  [31:0]  data_o;
 wire 	[6:0]	Op;
 wire 	[11:0]	imm;
 
+
 // Assignment
 assign 	Op  =   data_i[6:0];
 assign  imm =   (Op == `R_TYPE)?        12'bx :
@@ -19,7 +20,8 @@ assign  imm =   (Op == `R_TYPE)?        12'bx :
                 (Op == `LOAD_TYPE)?     data_i[31:20] :
                 (Op == `STORE_TYPE)?    {data_i[31:25], data_i[11:7]} :
                 (Op == `BRANCH_TYPE)?   {data_i[31], data_i[7], data_i[30:25], data_i[11:8]} :
-                12'bx;
+                12'bz;
+
 assign 	data_o = {{20{imm[11]}}, imm};
 
 endmodule
