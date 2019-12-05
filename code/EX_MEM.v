@@ -10,6 +10,8 @@ module EX_MEM(
     MemtoReg_i,
     MemWrite_i,
     RegWrite_i,
+    RDaddr_i,
+
     ALUResult_o,
     RS2data_o,
     Zero_o,
@@ -19,6 +21,7 @@ module EX_MEM(
     MemtoReg_o,
     MemWrite_o,
     RegWrite_o,
+    RDaddr_o
 );
 
 // Ports
@@ -32,6 +35,8 @@ input                   MemRead_i;
 input                   MemtoReg_i;
 input                   MemWrite_i;
 input                   RegWrite_i;
+input       [4:0]       RDaddr_i;
+
 output  reg [31:0]      ALUResult_o;
 output  reg [31:0]      RS2data_o;
 output  reg             Zero_o;
@@ -41,6 +46,7 @@ output  reg             MemRead_o;
 output  reg             MemtoReg_o;
 output  reg             MemWrite_o;
 output  reg             RegWrite_o;
+output  reg [4:0]       RDaddr_o;
 
 // Assignment
 always@(posedge clk_i) begin
@@ -53,6 +59,7 @@ always@(posedge clk_i) begin
     MemtoReg_o      =   MemtoReg_i;
     MemWrite_o      =   MemWrite_i;
     RegWrite_o      =   RegWrite_i;
+    RDaddr_o        =   RDaddr_i;
 end
 
 endmodule

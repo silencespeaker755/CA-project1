@@ -48,15 +48,18 @@ wire    [31:0]  instr_ID;
 wire    [6:0]   Op;
 wire    [4:0]   RS1addr;
 wire    [4:0]   RS2addr;
-wire    [4:0]   RDaddr;
+wire    [4:0]   RDaddr_ID;
+wire    [4:0]   RDaddr_EX;
+wire    [4:0]   RDaddr_MEM;
+wire    [4:0]   RDaddr_WB;
 wire    [9:0]   funct_ID;
 wire    [9:0]   funct_EX;
 // Parsing instr
-assign  Op          =   instr_ID[6:0];
-assign  RS1addr     =   instr_ID[19:15];
-assign  RS2addr     =   instr_ID[24:20];
-assign  RDaddr      =   instr_ID[11:7];
-assign  funct_ID    =   {instr_ID[31:25], instr_ID[14:12]};
+assign  Op              =   instr_ID[6:0];
+assign  RS1addr         =   instr_ID[19:15];
+assign  RS2addr         =   instr_ID[24:20];
+assign  RDaddr_ID       =   instr_ID[11:7];
+assign  funct_ID        =   {instr_ID[31:25], instr_ID[14:12]};
 // Control
 wire            Branch_ID;
 wire            Branch_EX;
@@ -159,7 +162,7 @@ Registers Registers(
     .clk_i          (clk_i),
     .RS1addr_i      (RS1addr),
     .RS2addr_i      (RS2addr),
-    .RDaddr_i       (RDaddr),
+    .RDaddr_i       (RDaddr_ID),
     .RDdata_i       (RDdata),
     .RegWrite_i     (RegWrite_WB),
     .RS1data_o      (RS1data_ID),
@@ -185,6 +188,7 @@ ID_EX ID_EX(
     .RS2data_i      (RS2data_ID),
     .imm_i          (imm_ID),
     .funct_i        (funct_ID),
+    .RDaddr_i       (RDaddr_ID),
 
     .pc_o           (pc_EX),
     .Branch_o       (Branch_EX),
@@ -197,7 +201,8 @@ ID_EX ID_EX(
     .RS1data_o      (RS1data_EX),
     .RS2data_o      (RS2data_EX),
     .imm_o          (imm_EX),
-    .funct_o        (funct_EX)
+    .funct_o        (funct_EX),
+    .RDaddr_o       (RDaddr_EX)
 );
 
 // EX stage
@@ -244,6 +249,7 @@ EX_MEM EX_MEM(
     .MemtoReg_i       (MemtoReg_EX),
     .MemWrite_i       (MemWrite_EX),
     .RegWrite_i       (RegWrite_EX),
+    .RDaddr_i         (RDaddr_EX),
 
     .ALUResult_o      (ALUResult_MEM),
     .RS2data_o        (RS2data_MEM),
@@ -253,7 +259,8 @@ EX_MEM EX_MEM(
     .MemRead_o        (MemRead_MEM),
     .MemtoReg_o       (MemtoReg_MEM),
     .MemWrite_o       (MemWrite_MEM),
-    .RegWrite_o       (RegWrite_MEM)
+    .RegWrite_o       (RegWrite_MEM),
+    .RDaddr_o         (RDaddr_MEM)
 );
 
 
@@ -278,11 +285,13 @@ MEM_WB MEM_WB(
     .Memdata_i      (Memdata_MEM),
     .ALUResult_i    (ALUResult_MEM),
     .MemtoReg_i     (MemtoReg_MEM),
+    .RDaddr_i       (RDaddr_MEM),
 
     .RegWrite_o     (RegWrite_WB),
     .Memdata_o      (Memdata_WB),
     .ALUResult_o    (ALUResult_WB),
-    .MemtoReg_o     (MemtoReg_WB)
+    .MemtoReg_o     (MemtoReg_WB),
+    .RDaddr_o       (RDaddr_WB)
 );
 
 // WB stage
