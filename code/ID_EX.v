@@ -1,5 +1,6 @@
 // ID/EX pipeline register
 module ID_EX(
+    clk_i,
     pc_i,
     Branch_i,
     MemRead_i,
@@ -27,6 +28,7 @@ module ID_EX(
     imm_o,
 );
 // Port
+input           clk_i;
 input   [31:0]  pc_i;
 input           Branch_i;
 input           MemRead_i;

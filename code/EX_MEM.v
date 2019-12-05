@@ -1,5 +1,6 @@
 // EX/MEM pipeline registers
 module EX_MEM(
+    clk_i,
     ALUResult_i,
     RS2data_i,
     Zero_i,
@@ -21,6 +22,7 @@ module EX_MEM(
 );
 
 // Ports
+input               clk_i;
 input   [31:0]      ALUResult_i;
 input   [31:0]      RS2data_i;
 input               Zero_i;

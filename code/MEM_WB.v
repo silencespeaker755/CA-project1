@@ -1,5 +1,6 @@
 // MEM/WB pipeline register
 module MEM_WB(
+    clk_i,
     RegWrite_i,
     Memdata_i,
     ALUResult_i,
@@ -10,6 +11,7 @@ module MEM_WB(
     MemtoReg_o,
 );
 // Ports
+input               clk_i;
 input               RegWrite_i;
 input   [31:0]      Memdata_i;
 input   [31:0]      ALUResult_i; 
