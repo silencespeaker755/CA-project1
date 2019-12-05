@@ -11,6 +11,7 @@
 `define IMM         1'b1
 // ALUOp constant
 `define R_OP        2'b10
+`define B_OP        2'b01
 `define OTHER_OP    2'b00
 // ALUCtrl constant
 `define ADD         3'b010
@@ -66,7 +67,7 @@ wire    [31:0]  RDdata;
 wire    [31:0]  imm;
 wire    [31:0]  RS2data_imm;
 // Shift
-wire    [31:0]  branch_distance;
+wire    [31:0]  branch_offset;
 // ALU
 wire            Zero;
 wire    [2:0]   ALUCtrl;
@@ -158,11 +159,11 @@ ALU_Control ALU_Control(
 
 Shift Shift(
     .data_i(imm),
-    .data_o(branch_distance)
+    .data_o(branch_offset)
 );
 Adder Adder2(
     .data1_in       (pc),
-    .data2_in       (branch_distance),
+    .data2_in       (branch_offset),
     .data_o         (pc_branch)
 );
 // MEM stage

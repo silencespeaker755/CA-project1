@@ -41,7 +41,7 @@ initial begin
     // TODO: initialize pipeline registers
     
     // Load instructions into instruction memory
-    $readmemb("../testdata/instruction.txt", CPU.Instruction_Memory.memory);
+    $readmemb("../testdata/test.txt", CPU.Instruction_Memory.memory);
     
     // Open output file
     outfile = $fopen("../testdata/output.txt") | 1;

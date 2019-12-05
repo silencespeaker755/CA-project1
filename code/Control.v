@@ -25,6 +25,7 @@ assign  Branch_o    =   (Op_i == `BRANCH_TYPE)?  1:0;
 assign  MemRead_o   =   (Op_i == `LOAD_TYPE)?    1:0;
 assign  MemtoReg_o  =   (Op_i == `LOAD_TYPE)?    `MEM:`REG;
 assign  ALUOp_o     =   (Op_i == `R_TYPE)?       `R_OP:
+                        (Op_i == `BRANCH_TYPE)?  `B_OP:
                         `OTHER_OP;
 assign  MemWrite_o  =   (Op_i == `STORE_TYPE)?   1:0;
 assign  ALUSrc_o    =   (Op_i == `R_TYPE)?       `REG:
