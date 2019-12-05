@@ -9,9 +9,10 @@
 1. Implement basic modules, i.e. Adder.v, ALU.v, ...
 2. Connect wire in CPU.v
 3. support basic command
+4. connect wire between stage and pipeline register in CPU.v 
 
 # TODO List
-2. Implement Pipeline Registers between stages
+2. Implement Pipeline Registers
 
 HW's Q&A
 https://cool.ntu.edu.tw/courses/340/assignments/4349
