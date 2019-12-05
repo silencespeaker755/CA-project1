@@ -7,11 +7,11 @@
 
 # Finished work
 1. Implement basic modules, i.e. Adder.v, ALU.v, ...
-1. Connect wire in CPU.v
+2. Connect wire in CPU.v
+3. support basic command
 
 # TODO List
 2. Implement Pipeline Registers between stages
-3. Check the reason why the code work well with instruction.txt but halt when executing Fibnocci\_instruction.txt
 
 HW's Q&A
 https://cool.ntu.edu.tw/courses/340/assignments/4349
