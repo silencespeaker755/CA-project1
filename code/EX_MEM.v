@@ -50,16 +50,16 @@ output  reg [4:0]       RDaddr_o;
 
 // Assignment
 always@(posedge clk_i) begin
-    ALUResult_o     =   ALUResult_i;
-    RS2data_o       =   RS2data_i;
-    Zero_o          =   Zero_i;
-    pc_branch_o     =   pc_branch_i;
-    Branch_o        =   Branch_i;
-    MemRead_o       =   MemRead_i;
-    MemtoReg_o      =   MemtoReg_i;
-    MemWrite_o      =   MemWrite_i;
-    RegWrite_o      =   RegWrite_i;
-    RDaddr_o        =   RDaddr_i;
+    ALUResult_o     <=   ALUResult_i;
+    RS2data_o       <=   RS2data_i;
+    Zero_o          <=   Zero_i;
+    pc_branch_o     <=   pc_branch_i;
+    Branch_o        <=   Branch_i;
+    MemRead_o       <=   MemRead_i;
+    MemtoReg_o      <=   MemtoReg_i;
+    MemWrite_o      <=   MemWrite_i;
+    RegWrite_o      <=   RegWrite_i;
+    RDaddr_o        <=   RDaddr_i;
 end
 
 endmodule
