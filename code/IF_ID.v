@@ -16,8 +16,8 @@ output  reg [31:0]  instr_o;
 
 // Assignment
 always@(posedge clk_i) begin
-    pc_o = pc_i;
-    instr_o = instr_i;
+    pc_o <= pc_i;
+    instr_o <= instr_i;
 end
 
 endmodule
