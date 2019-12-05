@@ -6,6 +6,7 @@ module MEM_WB(
     ALUResult_i,
     MemtoReg_i,
     RDaddr_i,
+
     RegWrite_o,
     Memdata_o,
     ALUResult_o,
@@ -19,6 +20,7 @@ input       [31:0]      Memdata_i;
 input       [31:0]      ALUResult_i; 
 input                   MemtoReg_i;
 input       [4:0]       RDaddr_i;
+
 output  reg             RegWrite_o;
 output  reg [31:0]      Memdata_o;
 output  reg [31:0]      ALUResult_o;
