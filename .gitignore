@@ -1,6 +1,4 @@
-CPU_1.out
-CPU_2.out
-.gitignore
+CPU.out
 .DS_STORE
 *output.txt
 *.vcd

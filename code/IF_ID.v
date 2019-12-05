@@ -8,10 +8,16 @@ module IF_ID(
 );
 
 // Ports
-input           clk_i;
-input   [31:0]  pc_i;
-input   [31:0]  instr_i;
-output  [31:0]  pc_o;
-output  [31:0]  instr_o;
+input               clk_i;
+input       [31:0]  pc_i;
+input       [31:0]  instr_i;
+output  reg [31:0]  pc_o;
+output  reg [31:0]  instr_o;
+
+// Assignment
+always@(posedge clk_i) begin
+    pc_o = pc_i;
+    instr_o = instr_i;
+end
 
 endmodule
