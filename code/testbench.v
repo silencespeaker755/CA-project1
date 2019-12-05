@@ -45,36 +45,36 @@ initial begin
 
     //ID_EX stage initialize
     CPU.ID_EX.pc_o          =   32'b0;
-    CPU.ID_EX.Branch_o      =   32'b0;
-    CPU.ID_EX.MemRead_o     =   32'b0;
-    CPU.ID_EX.MemtoReg_o    =   32'b0;
-    CPU.ID_EX.ALUOp_o       =   32'b0;
-    CPU.ID_EX.MemWrite_o    =   32'b0;
-    CPU.ID_EX.ALUSrc_o      =   32'b0;
-    CPU.ID_EX.RegWrite_o    =   32'b0;
-    CPU.ID_EX.funct_o       =   32'b0;
+    CPU.ID_EX.Branch_o      =   1'b0;
+    CPU.ID_EX.MemRead_o     =   1'b0;
+    CPU.ID_EX.MemtoReg_o    =   1'b0;
+    CPU.ID_EX.ALUOp_o       =   2'b0;
+    CPU.ID_EX.MemWrite_o    =   1'b0;
+    CPU.ID_EX.ALUSrc_o      =   1'b0;
+    CPU.ID_EX.RegWrite_o    =   1'b0;
+    CPU.ID_EX.funct_o       =   10'b0;
     CPU.ID_EX.RS1data_o     =   32'b0;
     CPU.ID_EX.RS2data_o     =   32'b0;
     CPU.ID_EX.imm_o         =   32'b0;
-    CPU.ID_EX.RDaddr_o      =   32'b0;
+    CPU.ID_EX.RDaddr_o      =   5'b0;
 
     //EX_MEM stage initialize
     CPU.EX_MEM.ALUResult_o  =   32'b0;
     CPU.EX_MEM.RS2data_o    =   32'b0;
-    CPU.EX_MEM.Zero_o       =   32'b0;
+    CPU.EX_MEM.Zero_o       =   1'b0;
     CPU.EX_MEM.pc_branch_o  =   32'b0;
-    CPU.EX_MEM.Branch_o     =   32'b0;
-    CPU.EX_MEM.MemRead_o    =   32'b0;
-    CPU.EX_MEM.MemtoReg_o   =   32'b0;
-    CPU.EX_MEM.MemWrite_o   =   32'b0;
-    CPU.EX_MEM.RegWrite_o   =   32'b0;
-    CPU.EX_MEM.RDaddr_o     =   32'b0;
+    CPU.EX_MEM.Branch_o     =   1'b0;
+    CPU.EX_MEM.MemRead_o    =   1'b0;
+    CPU.EX_MEM.MemtoReg_o   =   1'b0;
+    CPU.EX_MEM.MemWrite_o   =   1'b0;
+    CPU.EX_MEM.RegWrite_o   =   1'b0;
+    CPU.EX_MEM.RDaddr_o     =   5'b0;
     //MEM_WB stage initialize
-    CPU.MEM_WB.RegWrite_o   =   32'b0;
+    CPU.MEM_WB.RegWrite_o   =   1'b0;
     CPU.MEM_WB.Memdata_o    =   32'b0;
     CPU.MEM_WB.ALUResult_o  =   32'b0;
-    CPU.MEM_WB.MemtoReg_o   =   32'b0;
-    CPU.MEM_WB.RDaddr_o     =   32'b0;
+    CPU.MEM_WB.MemtoReg_o   =   1'b0;
+    CPU.MEM_WB.RDaddr_o     =   5'b0;
      
     // Load instructions into instruction memory
     $readmemb("../testdata/test.txt", CPU.Instruction_Memory.memory);
