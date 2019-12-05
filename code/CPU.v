@@ -84,7 +84,7 @@ assign PCWrite = 1;
 
 PC PC(
     .clk_i          (clk_i),
-    .rst_i          (start_i),
+    .rst_i          (Reset),
     .start_i        (start_i),
     .PCWrite_i      (PCWrite),
     .pc_i           (pc_next),
