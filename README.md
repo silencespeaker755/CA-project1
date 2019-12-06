@@ -13,6 +13,7 @@
 5. Support basic command with pipeline(verified)
 
 # TODO List
+0. Fix the naming style such that every wires' name end with \_IF, \_ID, \_EX, \_MEM and \_WB
 1. Implement Forward unit
 2. Stall process when load causing data hazard
 2. Move Shift and Adder2 from EX stage to ID stage, which is the pre-requisite of hazard detection
