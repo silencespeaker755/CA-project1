@@ -1,6 +1,8 @@
 // ID/EX pipeline register
 module ID_EX(
     clk_i,
+    rst_i,
+    start_i,
     pc_i,
     Branch_i,
     MemRead_i,
@@ -30,7 +32,9 @@ module ID_EX(
     RDaddr_o,
 );
 // Port
-input           clk_i;
+input               clk_i;
+input               rst_i;
+input               start_i;
 input       [31:0]  pc_i;
 input               Branch_i;
 input               MemRead_i;
@@ -60,20 +64,54 @@ output  reg [31:0]  imm_o;
 output  reg [4:0]   RDaddr_o;
 
 // Assignment
-always@(posedge clk_i) begin
-    pc_o        <=   pc_i;
-    Branch_o    <=   Branch_i;
-    MemRead_o   <=   MemRead_i;
-    MemtoReg_o  <=   MemtoReg_i;
-    ALUOp_o     <=   ALUOp_i;
-    MemWrite_o  <=   MemWrite_i;
-    ALUSrc_o    <=   ALUSrc_i;
-    RegWrite_o  <=   RegWrite_i;
-    funct_o     <=   funct_i;
-    RS1data_o   <=   RS1data_i;
-    RS2data_o   <=   RS2data_i;
-    imm_o       <=   imm_i;
-    RDaddr_o    <=   RDaddr_i;
+always@(posedge clk_i or negedge rst_i) begin
+    if(~rst_i) begin
+        pc_o        <=   32'b0;
+        Branch_o    <=   1'b0;
+        MemRead_o   <=   1'b0;
+        MemtoReg_o  <=   1'b0;
+        ALUOp_o     <=   2'b0;
+        MemWrite_o  <=   1'b0;
+        ALUSrc_o    <=   1'b0;
+        RegWrite_o  <=   1'b0;
+        funct_o     <=   10'b0;
+        RS1data_o   <=   32'b0;
+        RS2data_o   <=   32'b0;
+        imm_o       <=   32'b0;
+        RDaddr_o    <=   5'b0;
+    end
+    else begin
+        if(start_i) begin
+            pc_o        <=   pc_i;
+            Branch_o    <=   Branch_i;
+            MemRead_o   <=   MemRead_i;
+            MemtoReg_o  <=   MemtoReg_i;
+            ALUOp_o     <=   ALUOp_i;
+            MemWrite_o  <=   MemWrite_i;
+            ALUSrc_o    <=   ALUSrc_i;
+            RegWrite_o  <=   RegWrite_i;
+            funct_o     <=   funct_i;
+            RS1data_o   <=   RS1data_i;
+            RS2data_o   <=   RS2data_i;
+            imm_o       <=   imm_i;
+            RDaddr_o    <=   RDaddr_i;
+        end
+        else begin
+            pc_o        <=   32'b0;
+            Branch_o    <=   1'b0;
+            MemRead_o   <=   1'b0;
+            MemtoReg_o  <=   1'b0;
+            ALUOp_o     <=   2'b0;
+            MemWrite_o  <=   1'b0;
+            ALUSrc_o    <=   1'b0;
+            RegWrite_o  <=   1'b0;
+            funct_o     <=   10'b0;
+            RS1data_o   <=   32'b0;
+            RS2data_o   <=   32'b0;
+            imm_o       <=   32'b0;
+            RDaddr_o    <=   5'b0;
+        end
+    end
 end
 
 endmodule

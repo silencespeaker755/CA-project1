@@ -8,11 +8,16 @@
 # Finished work
 1. Implement basic modules, i.e. Adder.v, ALU.v, ...
 2. Connect wire in CPU.v
-3. support basic command
-4. connect wire between stage and pipeline register in CPU.v 
+3. Support basic command without pipeline
+4. Connect wire between stage and pipeline register in CPU.v 
+5. Support basic command with pipeline(verified)
 
 # TODO List
-2. Implement Pipeline Registers
+0. Fix the naming style such that every wires' name end with \_IF, \_ID, \_EX, \_MEM and \_WB
+1. Implement Forward unit
+2. Stall process when load causing data hazard
+2. Move Shift and Adder2 from EX stage to ID stage, which is the pre-requisite of hazard detection
+3. Implement Hazard\_Detectioin
 
 HW's Q&A
 https://cool.ntu.edu.tw/courses/340/assignments/4349

@@ -23,11 +23,13 @@
 module CPU
 (
     clk_i, 
+    rst_i,
     start_i
 );
 
 // Ports
 input           clk_i;
+input           rst_i;
 input           start_i;
 
 parameter instr_length = 32'b100;
@@ -114,7 +116,7 @@ assign PCWrite = 1;
 
 PC PC(
     .clk_i          (clk_i),
-    .rst_i          (start_i),
+    .rst_i          (rst_i),
     .start_i        (start_i),
     .PCWrite_i      (PCWrite),      // TODO
     .pc_i           (pc_next),
@@ -141,6 +143,8 @@ Instruction_Memory Instruction_Memory(
 // IF/ID pipeline register
 IF_ID IF_ID(
     .clk_i          (clk_i),
+    .rst_i          (rst_i),
+    .start_i        (start_i),
     .pc_i           (pc_IF),
     .instr_i        (instr_IF),
     .pc_o           (pc_ID),
@@ -162,7 +166,7 @@ Registers Registers(
     .clk_i          (clk_i),
     .RS1addr_i      (RS1addr),
     .RS2addr_i      (RS2addr),
-    .RDaddr_i       (RDaddr_ID),
+    .RDaddr_i       (RDaddr_WB),
     .RDdata_i       (RDdata),
     .RegWrite_i     (RegWrite_WB),
     .RS1data_o      (RS1data_ID),
@@ -176,6 +180,8 @@ Imm_Gen Imm_Gen(
 // ID/EX pipeline register
 ID_EX ID_EX(
     .clk_i          (clk_i),
+    .rst_i          (rst_i),
+    .start_i        (start_i),
     .pc_i           (pc_ID),
     .Branch_i       (Branch_ID),
     .MemRead_i      (MemRead_ID),
@@ -239,28 +245,30 @@ Adder Adder2(
 );
 // EX_MEM pipeline register
 EX_MEM EX_MEM(
-    .clk_i            (clk_i),
-    .ALUResult_i      (ALUResult_EX),
-    .RS2data_i        (RS2data_EX),
-    .Zero_i           (Zero_EX),
-    .pc_branch_i      (pc_branch_EX),
-    .Branch_i         (Branch_EX),
-    .MemRead_i        (MemRead_EX),
-    .MemtoReg_i       (MemtoReg_EX),
-    .MemWrite_i       (MemWrite_EX),
-    .RegWrite_i       (RegWrite_EX),
-    .RDaddr_i         (RDaddr_EX),
+    .clk_i          (clk_i),
+    .rst_i          (rst_i),
+    .start_i        (start_i),
+    .ALUResult_i    (ALUResult_EX),
+    .RS2data_i      (RS2data_EX),
+    .Zero_i         (Zero_EX),
+    .pc_branch_i    (pc_branch_EX),
+    .Branch_i       (Branch_EX),
+    .MemRead_i      (MemRead_EX),
+    .MemtoReg_i     (MemtoReg_EX),
+    .MemWrite_i     (MemWrite_EX),
+    .RegWrite_i     (RegWrite_EX),
+    .RDaddr_i       (RDaddr_EX),
 
-    .ALUResult_o      (ALUResult_MEM),
-    .RS2data_o        (RS2data_MEM),
-    .Zero_o           (Zero_MEM),
-    .pc_branch_o      (pc_branch_MEM),
-    .Branch_o         (Branch_MEM),
-    .MemRead_o        (MemRead_MEM),
-    .MemtoReg_o       (MemtoReg_MEM),
-    .MemWrite_o       (MemWrite_MEM),
-    .RegWrite_o       (RegWrite_MEM),
-    .RDaddr_o         (RDaddr_MEM)
+    .ALUResult_o    (ALUResult_MEM),
+    .RS2data_o      (RS2data_MEM),
+    .Zero_o         (Zero_MEM),
+    .pc_branch_o    (pc_branch_MEM),
+    .Branch_o       (Branch_MEM),
+    .MemRead_o      (MemRead_MEM),
+    .MemtoReg_o     (MemtoReg_MEM),
+    .MemWrite_o     (MemWrite_MEM),
+    .RegWrite_o     (RegWrite_MEM),
+    .RDaddr_o       (RDaddr_MEM)
 );
 
 
@@ -281,6 +289,8 @@ Branch_Gate Branch_Gate(
 // MEM_WB pipeline register
 MEM_WB MEM_WB(
     .clk_i          (clk_i),
+    .rst_i          (rst_i),
+    .start_i        (start_i),
     .RegWrite_i     (RegWrite_MEM),
     .Memdata_i      (Memdata_MEM),
     .ALUResult_i    (ALUResult_MEM),
@@ -298,7 +308,7 @@ MEM_WB MEM_WB(
 MUX32 ALU_MEM_MUX32(
     .data1_i        (ALUResult_WB),
     .data2_i        (Memdata_WB),
-    .select_i       (MemtoReg),
+    .select_i       (MemtoReg_WB),
     .data_o         (RDdata)
 );
 

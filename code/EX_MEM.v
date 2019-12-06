@@ -1,6 +1,8 @@
 // EX/MEM pipeline registers
 module EX_MEM(
     clk_i,
+    rst_i,
+    start_i,
     ALUResult_i,
     RS2data_i,
     Zero_i,
@@ -26,6 +28,8 @@ module EX_MEM(
 
 // Ports
 input                   clk_i;
+input                   rst_i;
+input                   start_i;
 input       [31:0]      ALUResult_i;
 input       [31:0]      RS2data_i;
 input                   Zero_i;
@@ -49,17 +53,45 @@ output  reg             RegWrite_o;
 output  reg [4:0]       RDaddr_o;
 
 // Assignment
-always@(posedge clk_i) begin
-    ALUResult_o     <=   ALUResult_i;
-    RS2data_o       <=   RS2data_i;
-    Zero_o          <=   Zero_i;
-    pc_branch_o     <=   pc_branch_i;
-    Branch_o        <=   Branch_i;
-    MemRead_o       <=   MemRead_i;
-    MemtoReg_o      <=   MemtoReg_i;
-    MemWrite_o      <=   MemWrite_i;
-    RegWrite_o      <=   RegWrite_i;
-    RDaddr_o        <=   RDaddr_i;
+always@(posedge clk_i or negedge rst_i) begin
+    if(~rst_i) begin
+        ALUResult_o     <=   32'b0;
+        RS2data_o       <=   32'b0;
+        Zero_o          <=   1'b0;
+        pc_branch_o     <=   32'b0;
+        Branch_o        <=   1'b0;
+        MemRead_o       <=   1'b0;
+        MemtoReg_o      <=   1'b0;
+        MemWrite_o      <=   1'b0;
+        RegWrite_o      <=   1'b0;
+        RDaddr_o        <=   5'b0;
+    end
+    else begin
+        if(start_i) begin
+            ALUResult_o     <=   ALUResult_i;
+            RS2data_o       <=   RS2data_i;
+            Zero_o          <=   Zero_i;
+            pc_branch_o     <=   pc_branch_i;
+            Branch_o        <=   Branch_i;
+            MemRead_o       <=   MemRead_i;
+            MemtoReg_o      <=   MemtoReg_i;
+            MemWrite_o      <=   MemWrite_i;
+            RegWrite_o      <=   RegWrite_i;
+            RDaddr_o        <=   RDaddr_i;
+        end
+        else begin
+            ALUResult_o     <=   32'b0;
+            RS2data_o       <=   32'b0;
+            Zero_o          <=   1'b0;
+            pc_branch_o     <=   32'b0;
+            Branch_o        <=   1'b0;
+            MemRead_o       <=   1'b0;
+            MemtoReg_o      <=   1'b0;
+            MemWrite_o      <=   1'b0;
+            RegWrite_o      <=   1'b0;
+            RDaddr_o        <=   5'b0;
+        end
+    end
 end
 
 endmodule
