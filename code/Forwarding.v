@@ -15,7 +15,7 @@ reg [1:0]	ALU_select2;
 assign ALU_src1_select_o = ALU_select1;
 assign ALU_src2_select_o = ALU_select2;
 
-always@(*) begin
+always @(*) begin
 	ALU_select1 = 2'b00;
 	ALU_select2 = 2'b00;
 	// EX hazard
@@ -34,3 +34,4 @@ always@(*) begin
 		ALU_select2 = 2'b01;
 end
 
+endmodule

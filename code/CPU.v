@@ -105,9 +105,11 @@ wire    [31:0]  RS2data_imm;
 wire    [31:0]  branch_offset;
 // ALU
 wire            Zero_ID;
-wire    [31:0]  ALU_src1_select_EX;
-wire    [31:0]  ALU_src2_select_EX;
+wire    [4:0]  ALU_src1_select_EX;
+wire    [4:0]  ALU_src2_select_EX;
 wire    [2:0]   ALUCtrl;
+wire    [31:0]  ALU_src1_EX;
+wire    [31:0]  ALU_src2_EX;
 wire    [31:0]  ALUResult_EX;
 wire    [31:0]  ALUResult_MEM;
 wire    [31:0]  ALUResult_WB;
@@ -271,8 +273,24 @@ Forwarding Forwarding(
     .ALU_src2_select_o    (ALU_src2_select_EX),
 );
 
+MUX32_3 MUX32_forwarding(
+    .data_EX_i      (RS1data_EX),
+    .ALUreult_MEM_i (ALUResult_MEM),
+    .RDdata_WB_i    (RDdata),
+    .select_i       (ALU_src1_select_EX),
+    .data_o         (ALU_src1_EX)
+);
+
+MUX32_3 MUX32_forwarding(
+    .data_EX_i      (RS2data_EX),
+    .ALUreult_MEM_i (ALUResult_MEM),
+    .RDdata_WB_i    (RDdata),
+    .select_i       (ALU_src2_select_EX),
+    .data_o         (ALU_src2_EX)
+);
+
 MUX32 RS2_IMM_MUX32(
-    .data1_i        (RS2data_EX),
+    .data1_i        (ALU_src2_EX),
     .data2_i        (imm_EX),
     .select_i       (ALUSrc_EX),
     .data_o         (RS2data_imm)
@@ -285,7 +303,7 @@ ALU_Control ALU_Control(
 );
 
 ALU ALU(
-    .data1_i        (RS1data_EX),
+    .data1_i        (ALU_src1_EX),
     .data2_i        (RS2data_imm),
     .ALUCtrl_i      (ALUCtrl),
     .data_o         (ALUResult_EX),
@@ -297,7 +315,7 @@ EX_MEM EX_MEM(
     .rst_i          (rst_i),
     .start_i        (start_i),
     .ALUResult_i    (ALUResult_EX),
-    .RS2data_i      (RS2data_EX),
+    .RS2data_i      (ALU_src2_EX),
     .MemRead_i      (MemRead_EX),
     .MemtoReg_i     (MemtoReg_EX),
     .MemWrite_i     (MemWrite_EX),
