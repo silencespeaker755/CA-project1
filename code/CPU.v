@@ -41,15 +41,17 @@ wire    [31:0]  pc_IF;
 wire    [31:0]  pc_ID;
 wire    [31:0]  pc_EX;
 wire    [31:0]  pc_next;
-wire    [31:0]  pc_branch_EX;
-wire    [31:0]  pc_branch_MEM;
+wire    [31:0]  pc_branch_ID;
+
 wire    [31:0]  pc_plus_four;
 // Instr
 wire    [31:0]  instr_IF;
 wire    [31:0]  instr_ID;
 wire    [6:0]   Op;
-wire    [4:0]   RS1addr;
-wire    [4:0]   RS2addr;
+wire    [4:0]   RS1addr_ID;
+wire    [4:0]   RS1addr_EX;
+wire    [4:0]   RS2addr_ID;
+wire    [4:0]   RS2addr_EX;
 wire    [4:0]   RDaddr_ID;
 wire    [4:0]   RDaddr_EX;
 wire    [4:0]   RDaddr_MEM;
@@ -64,23 +66,28 @@ assign  RDaddr_ID       =   instr_ID[11:7];
 assign  funct_ID        =   {instr_ID[31:25], instr_ID[14:12]};
 // Control
 wire            Branch_ID;
-wire            Branch_EX;
-wire            Branch_MEM;
+wire            Branch_ID_Control;
 wire            MemRead_ID;
+wire            MemRead_ID_Control;
 wire            MemRead_EX;
 wire            MemRead_MEM;
 wire            MemtoReg_ID;
+wire            MemtoReg_ID_Control;
 wire            MemtoReg_EX;
 wire            MemtoReg_MEM;
 wire            MemtoReg_WB;
 wire    [1:0]   ALUOp_ID;
+wire    [1:0]   ALUOp_ID_Control;
 wire    [1:0]   ALUOp_EX;
 wire            MemWrite_ID;
+wire            MemWrite_ID_Control;
 wire            MemWrite_EX;
 wire            MemWrite_MEM;
 wire            ALUSrc_ID;
+wire            ALUSrc_ID_Control;
 wire            ALUSrc_EX;
 wire            RegWrite_ID;
+wire            RegWrite_ID_Control;
 wire            RegWrite_EX;
 wire            RegWrite_MEM;
 wire            RegWrite_WB;
@@ -97,8 +104,7 @@ wire    [31:0]  RS2data_imm;
 // Shift
 wire    [31:0]  branch_offset;
 // ALU
-wire            Zero_EX;
-wire            Zero_MEM;
+wire            Zero_ID;
 wire    [2:0]   ALUCtrl;
 wire    [31:0]  ALUResult_EX;
 wire    [31:0]  ALUResult_MEM;
@@ -131,8 +137,8 @@ Adder Adder1(
 
 MUX32 PC_MUX32(
     .data1_i        (pc_plus_four),
-    .data2_i        (pc_branch_MEM),
-    .select_i       (PCSrc),
+    .data2_i        (pc_branch_ID),
+    .select_i       (Branch_ID),
     .data_o         (pc_next)
 );
 
@@ -151,8 +157,59 @@ IF_ID IF_ID(
     .instr_o        (instr_ID)
 );
 // ID stage
+Registers Registers(
+    .clk_i          (clk_i),
+    .RS1addr_i      (RS1addr_ID),
+    .RS2addr_i      (RS2addr_ID),
+    .RDaddr_i       (RDaddr_WB),
+    .RDdata_i       (RDdata),
+    .RegWrite_i     (RegWrite_WB),
+    .RS1data_o      (RS1data_ID),
+    .RS2data_o      (RS2data_ID)
+);
+
+Equal Equal(
+    .RS1_i(RS1data_ID),
+    .RS2_i(RS2data_ID),
+    .Zero_o(Zero_ID),
+);
+
+Imm_Gen Imm_Gen(
+    .data_i         (instr_ID),
+    .data_o         (imm_ID)
+);
+
+Shift Shift(
+    .data_i         (imm_ID),
+    .data_o         (branch_offset)
+);
+
+Adder Adder2(
+    .data1_in       (pc_ID),
+    .data2_in       (branch_offset),
+    .data_o         (pc_branch_ID)
+);
+
 Control Control(
     .Op_i           (Op),
+    .Zero_i         (Zero_ID),
+    .Branch_o       (Branch_ID_Control),
+    .MemRead_o      (MemRead_ID_Control),
+    .MemtoReg_o     (MemtoReg_ID_Control),
+    .ALUOp_o        (ALUOp_ID_Control),
+    .MemWrite_o     (MemWrite_ID_Control),
+    .ALUSrc_o       (ALUSrc_ID_Control),
+    .RegWrite_o     (RegWrite_ID_Control)
+);
+
+MUX7 MUX7(
+    .Branch_i       (Branch_ID_Control),
+    .MemRead_i      (MemRead_ID_Control),
+    .MemtoReg_i     (MemtoReg_ID_Control),
+    .ALUOp_i        (ALUOp_ID_Control),
+    .MemWrite_i     (MemWrite_ID_Control),
+    .ALUSrc_i       (ALUSrc_ID_Control),
+    .RegWrite_i     (RegWrite_ID_Control),
     .Branch_o       (Branch_ID),
     .MemRead_o      (MemRead_ID),
     .MemtoReg_o     (MemtoReg_ID),
@@ -162,28 +219,12 @@ Control Control(
     .RegWrite_o     (RegWrite_ID)
 );
 
-Registers Registers(
-    .clk_i          (clk_i),
-    .RS1addr_i      (RS1addr),
-    .RS2addr_i      (RS2addr),
-    .RDaddr_i       (RDaddr_WB),
-    .RDdata_i       (RDdata),
-    .RegWrite_i     (RegWrite_WB),
-    .RS1data_o      (RS1data_ID),
-    .RS2data_o      (RS2data_ID)
-);
-
-Imm_Gen Imm_Gen(
-    .data_i         (instr_ID),
-    .data_o         (imm_ID)
-);
 // ID/EX pipeline register
 ID_EX ID_EX(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
     .start_i        (start_i),
     .pc_i           (pc_ID),
-    .Branch_i       (Branch_ID),
     .MemRead_i      (MemRead_ID),
     .MemtoReg_i     (MemtoReg_ID),
     .ALUOp_i        (ALUOp_ID),
@@ -195,9 +236,10 @@ ID_EX ID_EX(
     .imm_i          (imm_ID),
     .funct_i        (funct_ID),
     .RDaddr_i       (RDaddr_ID),
+    .RS1addr_i      (RS1addr_ID),
+    .RS2addr_i      (RS2addr_ID),
 
     .pc_o           (pc_EX),
-    .Branch_o       (Branch_EX),
     .MemRead_o      (MemRead_EX),
     .MemtoReg_o     (MemtoReg_EX),
     .ALUOp_o        (ALUOp_EX),
@@ -208,9 +250,11 @@ ID_EX ID_EX(
     .RS2data_o      (RS2data_EX),
     .imm_o          (imm_EX),
     .funct_o        (funct_EX),
-    .RDaddr_o       (RDaddr_EX)
+    .RDaddr_o       (RDaddr_EX),
+    .RS1addr_o      (RS1addr_EX),
+    .RS2addr_o      (RS2addr_EX)
 );
-
+// forwarding input : RS1addr_EX, RS2addr_EX
 // EX stage
 MUX32 RS2_IMM_MUX32(
     .data1_i        (RS2data_EX),
@@ -230,19 +274,8 @@ ALU ALU(
     .data2_i        (RS2data_imm),
     .ALUCtrl_i      (ALUCtrl),
     .data_o         (ALUResult_EX),
-    .Zero_o         (Zero_EX)
 );
 
-
-Shift Shift(
-    .data_i         (imm_EX),
-    .data_o         (branch_offset)
-);
-Adder Adder2(
-    .data1_in       (pc_EX),
-    .data2_in       (branch_offset),
-    .data_o         (pc_branch_EX)
-);
 // EX_MEM pipeline register
 EX_MEM EX_MEM(
     .clk_i          (clk_i),
@@ -250,9 +283,6 @@ EX_MEM EX_MEM(
     .start_i        (start_i),
     .ALUResult_i    (ALUResult_EX),
     .RS2data_i      (RS2data_EX),
-    .Zero_i         (Zero_EX),
-    .pc_branch_i    (pc_branch_EX),
-    .Branch_i       (Branch_EX),
     .MemRead_i      (MemRead_EX),
     .MemtoReg_i     (MemtoReg_EX),
     .MemWrite_i     (MemWrite_EX),
@@ -261,9 +291,6 @@ EX_MEM EX_MEM(
 
     .ALUResult_o    (ALUResult_MEM),
     .RS2data_o      (RS2data_MEM),
-    .Zero_o         (Zero_MEM),
-    .pc_branch_o    (pc_branch_MEM),
-    .Branch_o       (Branch_MEM),
     .MemRead_o      (MemRead_MEM),
     .MemtoReg_o     (MemtoReg_MEM),
     .MemWrite_o     (MemWrite_MEM),
@@ -281,11 +308,6 @@ Data_Memory Data_Memory(
     .data_o         (Memdata_MEM)
 );
 
-Branch_Gate Branch_Gate(
-    .Branch_i       (Branch_MEM),
-    .Zero_i         (Zero_MEM),
-    .PCSrc_o        (PCSrc)
-);
 // MEM_WB pipeline register
 MEM_WB MEM_WB(
     .clk_i          (clk_i),
