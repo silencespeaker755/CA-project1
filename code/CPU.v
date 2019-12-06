@@ -105,6 +105,8 @@ wire    [31:0]  RS2data_imm;
 wire    [31:0]  branch_offset;
 // ALU
 wire            Zero_ID;
+wire    [31:0]  ALU_src1_select_EX;
+wire    [31:0]  ALU_src2_select_EX;
 wire    [2:0]   ALUCtrl;
 wire    [31:0]  ALUResult_EX;
 wire    [31:0]  ALUResult_MEM;
@@ -203,6 +205,7 @@ Control Control(
 );
 
 MUX7 MUX7(
+    .IsHazard       (),                     //TODO
     .Branch_i       (Branch_ID_Control),
     .MemRead_i      (MemRead_ID_Control),
     .MemtoReg_i     (MemtoReg_ID_Control),
@@ -256,6 +259,18 @@ ID_EX ID_EX(
 );
 // forwarding input : RS1addr_EX, RS2addr_EX
 // EX stage
+
+Forwarding Forwarding(
+    .EX_MEM_RegWrite      (MemtoReg_MEM),
+    .MEM_WB_RegWrite      (MemtoReg_WB),
+    .ID_EX_RS1addr_i      (RS1addr_EX),
+    .ID_EX_RS2addr_i      (RS2addr_EX),
+    .EX_MEM_RDaddr_i      (RDaddr_MEM),
+    .MEM_WB_RDaddr_i      (RDaddr_WB),
+    .ALU_src1_select_o    (ALU_src1_select_EX),
+    .ALU_src2_select_o    (ALU_src2_select_EX),
+);
+
 MUX32 RS2_IMM_MUX32(
     .data1_i        (RS2data_EX),
     .data2_i        (imm_EX),
