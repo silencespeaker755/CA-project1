@@ -39,6 +39,14 @@ initial begin
     end
 
     // TODO: initialize pipeline registers
+    //Control signal initialize
+    CPU.Control.Branch_o    = 1'b0;
+    CPU.Control.MemRead_o   = 1'b0;
+    CPU.Control.MemtoReg_o  = 1'b0;
+    CPU.Control.ALUOp_o     = 2'b0;
+    CPU.Control.MemWrite_o  = 1'b0;
+    CPU.Control.ALUSrc_o    = 1'b0;
+    CPU.Control.RegWrite_o  = 1'b0;
     //IF_ID stage initialize
     CPU.IF_ID.pc_o          =   32'b0;
     CPU.IF_ID.instr_o       =   32'b0;

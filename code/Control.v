@@ -11,30 +11,32 @@ module Control(
 );
 
 // Ports
-input   [6:0]   Op_i;
-output          Branch_o;
-output          MemRead_o;
-output          MemtoReg_o;
-output  [1:0]   ALUOp_o;
-output          MemWrite_o;
-output          ALUSrc_o;
-output          RegWrite_o;
+input           [6:0]   Op_i;
+output  reg             Branch_o;
+output  reg             MemRead_o;
+output  reg             MemtoReg_o;
+output  reg     [1:0]   ALUOp_o;
+output  reg             MemWrite_o;
+output  reg             ALUSrc_o;
+output  reg             RegWrite_o;
 
 // Assignment
-assign  Branch_o    =   (Op_i == `BRANCH_TYPE)?  1:0;
-assign  MemRead_o   =   (Op_i == `LOAD_TYPE)?    1:0;
-assign  MemtoReg_o  =   (Op_i == `LOAD_TYPE)?    `MEM:`REG;
-assign  ALUOp_o     =   (Op_i == `R_TYPE)?       `R_OP:
-                        (Op_i == `BRANCH_TYPE)?  `B_OP:
-                        `OTHER_OP;
-assign  MemWrite_o  =   (Op_i == `STORE_TYPE)?   1:0;
-assign  ALUSrc_o    =   (Op_i == `R_TYPE)?       `REG:
-                        (Op_i == `I_TYPE)?       `IMM:
-                        (Op_i == `LOAD_TYPE)?    `IMM:
-                        (Op_i == `STORE_TYPE)?   `IMM:
-                        (Op_i == `BRANCH_TYPE)?  `REG:0;
-assign  RegWrite_o  =   (Op_i == `R_TYPE)?       1:
-                        (Op_i == `I_TYPE)?       1:
-                        (Op_i == `LOAD_TYPE)?    1:0;
+always@(Op_i) begin
+    Branch_o    =   (Op_i == `BRANCH_TYPE)?  1:0;
+    MemRead_o   =   (Op_i == `LOAD_TYPE)?    1:0;
+    MemtoReg_o  =   (Op_i == `LOAD_TYPE)?    `MEM:`REG;
+    ALUOp_o     =   (Op_i == `R_TYPE)?       `R_OP:
+                    (Op_i == `BRANCH_TYPE)?  `B_OP:
+                    `OTHER_OP;
+    MemWrite_o  =   (Op_i == `STORE_TYPE)?   1:0;
+    ALUSrc_o    =   (Op_i == `R_TYPE)?       `REG:
+                    (Op_i == `I_TYPE)?       `IMM:
+                    (Op_i == `LOAD_TYPE)?    `IMM:
+                    (Op_i == `STORE_TYPE)?   `IMM:
+                    (Op_i == `BRANCH_TYPE)?  `REG:0;
+    RegWrite_o  =   (Op_i == `R_TYPE)?       1:
+                    (Op_i == `I_TYPE)?       1:
+                    (Op_i == `LOAD_TYPE)?    1:0;
+end
 
 endmodule
