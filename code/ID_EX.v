@@ -31,11 +31,7 @@ module ID_EX(
     funct_o,
     RDaddr_o,
     RS1addr_o,
-<<<<<<< HEAD
-    RS2addr_o,
-=======
     RS2addr_o
->>>>>>> 34be60b833b0c0dc4d687da1b8fbc0bf9aa18261
 );
 // Port
 input               clk_i;
@@ -104,11 +100,7 @@ always@(posedge clk_i or negedge rst_i) begin
             imm_o       <=   imm_i;
             RDaddr_o    <=   RDaddr_i;
             RS1addr_o   <=   RS1addr_i;
-<<<<<<< HEAD
-            RS2addr_o   <=   RS1addr_i;
-=======
             RS2addr_o   <=   RS2addr_i;
->>>>>>> 34be60b833b0c0dc4d687da1b8fbc0bf9aa18261
         end
         else begin
             pc_o        <=   32'b0;
