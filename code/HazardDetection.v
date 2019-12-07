@@ -8,7 +8,7 @@ module HazardDetection(
 	output stall_o
 );
 
-assign Hazard_o = (MemRead_EX_i && ((RS1addr_ID_i == RDaddr_EX_i) || (RS2addr_ID_i == RDaddr_EX_i))) ? 1 : 0;
+assign Hazard_o = (MemRead_EX_i && ((RS1addr_ID_i == RDaddr_EX_i) || (RS2addr_ID_i == RDaddr_EX_i))) ? 1'b1 : 1'b0;
 assign stall_o = Hazard_o;
 assign PCupdate_o = ~Hazard_o;
 

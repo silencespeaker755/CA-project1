@@ -116,6 +116,10 @@ wire    [31:0]  ALUResult_WB;
 // Data Memory
 wire    [31:0]  Memdata_MEM;
 wire    [31:0]  Memdata_WB;
+// Hazard Detection
+wire            PCupdate_HD;
+wire            Hazard_HD;
+wire            stall_HD;
 
 // without pipeline
 assign PCWrite = 1;
@@ -127,7 +131,7 @@ assign PCWrite = 1;
 PC PC(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
-    .start_i        (start_i),
+    .start_i        ((start_i && PCupdate_HD)),        // TODO
     .PCWrite_i      (PCWrite),      // TODO
     .pc_i           (pc_next),
     .pc_o           (pc_IF)
@@ -155,12 +159,25 @@ IF_ID IF_ID(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
     .start_i        (start_i),
+    .stall_i        (stall_HD),
+    .flush_i        (Branch_ID),
     .pc_i           (pc_IF),
     .instr_i        (instr_IF),
     .pc_o           (pc_ID),
     .instr_o        (instr_ID)
 );
 // ID stage
+
+HazardDetection HazardDetection(
+    .MemRead_EX_i   (MemRead_EX),
+    .RS1addr_ID_i   (RS1addr_ID),
+    .RS2addr_ID_i   (RS2addr_ID),
+    .RDaddr_EX_i    (RDaddr_EX),
+    .PCupdate_o     (PCupdate_HD),
+    .Hazard_o       (Hazard_HD),
+    .stall_o        (stall_HD)
+);
+
 Registers Registers(
     .clk_i          (clk_i),
     .RS1addr_i      (RS1addr_ID),
@@ -207,7 +224,7 @@ Control Control(
 );
 
 MUX7 MUX7(
-    .IsHazard       (),                     //TODO
+    .IsHazard       (Hazard_HD),                     //TODO
     .Branch_i       (Branch_ID_Control),
     .MemRead_i      (MemRead_ID_Control),
     .MemtoReg_i     (MemtoReg_ID_Control),
