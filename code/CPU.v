@@ -105,8 +105,8 @@ wire    [31:0]  RS2data_imm;
 wire    [31:0]  branch_offset;
 // ALU
 wire            Zero_ID;
-wire    [4:0]  ALU_src1_select_EX;
-wire    [4:0]  ALU_src2_select_EX;
+wire    [1:0]  ALU_src1_select_EX;
+wire    [1:0]  ALU_src2_select_EX;
 wire    [2:0]   ALUCtrl;
 wire    [31:0]  ALU_src1_EX;
 wire    [31:0]  ALU_src2_EX;
@@ -192,7 +192,7 @@ Registers Registers(
 Equal Equal(
     .RS1_i(RS1data_ID),
     .RS2_i(RS2data_ID),
-    .Zero_o(Zero_ID),
+    .Zero_o(Zero_ID)
 );
 
 Imm_Gen Imm_Gen(
@@ -224,7 +224,7 @@ Control Control(
 );
 
 MUX7 MUX7(
-    .IsHazard       (Hazard_HD),                     //TODO
+    .IsHazard_i     (Hazard_HD),                     //TODO
     .Branch_i       (Branch_ID_Control),
     .MemRead_i      (MemRead_ID_Control),
     .MemtoReg_i     (MemtoReg_ID_Control),
@@ -287,10 +287,10 @@ Forwarding Forwarding(
     .EX_MEM_RDaddr_i      (RDaddr_MEM),
     .MEM_WB_RDaddr_i      (RDaddr_WB),
     .ALU_src1_select_o    (ALU_src1_select_EX),
-    .ALU_src2_select_o    (ALU_src2_select_EX),
+    .ALU_src2_select_o    (ALU_src2_select_EX)
 );
 
-MUX32_3 MUX32_forwarding(
+MUX32_forwarding RS1_forwarding_MUX(
     .data_EX_i      (RS1data_EX),
     .ALUreult_MEM_i (ALUResult_MEM),
     .RDdata_WB_i    (RDdata),
@@ -298,7 +298,7 @@ MUX32_3 MUX32_forwarding(
     .data_o         (ALU_src1_EX)
 );
 
-MUX32_3 MUX32_forwarding(
+MUX32_forwarding RS2_forwarding_MUX(
     .data_EX_i      (RS2data_EX),
     .ALUreult_MEM_i (ALUResult_MEM),
     .RDdata_WB_i    (RDdata),
@@ -323,7 +323,7 @@ ALU ALU(
     .data1_i        (ALU_src1_EX),
     .data2_i        (RS2data_imm),
     .ALUCtrl_i      (ALUCtrl),
-    .data_o         (ALUResult_EX),
+    .data_o         (ALUResult_EX)
 );
 
 // EX_MEM pipeline register
