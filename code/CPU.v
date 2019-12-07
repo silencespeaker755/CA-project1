@@ -224,7 +224,11 @@ Control Control(
 );
 
 MUX7 MUX7(
+<<<<<<< HEAD
     .IsHazard_i       (Hazard_HD),                     //TODO
+=======
+    .IsHazard_i     (Hazard_HD),                     //TODO
+>>>>>>> 34be60b833b0c0dc4d687da1b8fbc0bf9aa18261
     .Branch_i       (Branch_ID_Control),
     .MemRead_i      (MemRead_ID_Control),
     .MemtoReg_i     (MemtoReg_ID_Control),
@@ -290,7 +294,11 @@ Forwarding Forwarding(
     .ALU_src2_select_o    (ALU_src2_select_EX)
 );
 
+<<<<<<< HEAD
 MUX32_forwarding MUX32_forwarding1(
+=======
+MUX32_forwarding RS1_forwarding_MUX(
+>>>>>>> 34be60b833b0c0dc4d687da1b8fbc0bf9aa18261
     .data_EX_i      (RS1data_EX),
     .ALUreult_MEM_i (ALUResult_MEM),
     .RDdata_WB_i    (RDdata),
@@ -298,7 +306,11 @@ MUX32_forwarding MUX32_forwarding1(
     .data_o         (ALU_src1_EX)
 );
 
+<<<<<<< HEAD
 MUX32_forwarding MUX32_forwarding2(
+=======
+MUX32_forwarding RS2_forwarding_MUX(
+>>>>>>> 34be60b833b0c0dc4d687da1b8fbc0bf9aa18261
     .data_EX_i      (RS2data_EX),
     .ALUreult_MEM_i (ALUResult_MEM),
     .RDdata_WB_i    (RDdata),

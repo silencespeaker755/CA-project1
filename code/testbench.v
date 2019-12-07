@@ -50,6 +50,11 @@ initial begin
     CPU.Control.ALUSrc_o    = 1'b0;
     CPU.Control.RegWrite_o  = 1'b0;
     //IF_ID stage initialize
+<<<<<<< HEAD
+=======
+    CPU.IF_ID.reg_pc_o          =   32'b0; 
+    CPU.IF_ID.reg_instr_o       =   32'b0;
+>>>>>>> 34be60b833b0c0dc4d687da1b8fbc0bf9aa18261
 
     //ID_EX stage initialize
     CPU.ID_EX.pc_o          =   32'b0;
