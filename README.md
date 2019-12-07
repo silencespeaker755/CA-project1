@@ -7,9 +7,9 @@
 
 # Finished work
 1. Implement basic modules, i.e. Adder.v, ALU.v, ...
-2. Connect wire in CPU.v
+2. Connect wires in CPU.v
 3. Support basic command without pipeline
-4. Connect wire between stage and pipeline register in CPU.v 
+4. Connect wire between stages and pipeline registers in CPU.v 
 5. Support basic command with pipeline(verified)
 
 # TODO List
