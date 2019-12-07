@@ -5,9 +5,6 @@ module EX_MEM(
     start_i,
     ALUResult_i,
     RS2data_i,
-    Zero_i,
-    pc_branch_i,
-    Branch_i,
     MemRead_i,
     MemtoReg_i,
     MemWrite_i,
@@ -16,9 +13,6 @@ module EX_MEM(
 
     ALUResult_o,
     RS2data_o,
-    Zero_o,
-    pc_branch_o,
-    Branch_o,
     MemRead_o,
     MemtoReg_o,
     MemWrite_o,
@@ -32,9 +26,6 @@ input                   rst_i;
 input                   start_i;
 input       [31:0]      ALUResult_i;
 input       [31:0]      RS2data_i;
-input                   Zero_i;
-input       [31:0]      pc_branch_i;
-input                   Branch_i;
 input                   MemRead_i;
 input                   MemtoReg_i;
 input                   MemWrite_i;
@@ -43,9 +34,6 @@ input       [4:0]       RDaddr_i;
 
 output  reg [31:0]      ALUResult_o;
 output  reg [31:0]      RS2data_o;
-output  reg             Zero_o;
-output  reg [31:0]      pc_branch_o;
-output  reg             Branch_o;
 output  reg             MemRead_o;
 output  reg             MemtoReg_o;
 output  reg             MemWrite_o;
@@ -57,9 +45,6 @@ always@(posedge clk_i or negedge rst_i) begin
     if(~rst_i) begin
         ALUResult_o     <=   32'b0;
         RS2data_o       <=   32'b0;
-        Zero_o          <=   1'b0;
-        pc_branch_o     <=   32'b0;
-        Branch_o        <=   1'b0;
         MemRead_o       <=   1'b0;
         MemtoReg_o      <=   1'b0;
         MemWrite_o      <=   1'b0;
@@ -70,9 +55,6 @@ always@(posedge clk_i or negedge rst_i) begin
         if(start_i) begin
             ALUResult_o     <=   ALUResult_i;
             RS2data_o       <=   RS2data_i;
-            Zero_o          <=   Zero_i;
-            pc_branch_o     <=   pc_branch_i;
-            Branch_o        <=   Branch_i;
             MemRead_o       <=   MemRead_i;
             MemtoReg_o      <=   MemtoReg_i;
             MemWrite_o      <=   MemWrite_i;
@@ -82,9 +64,6 @@ always@(posedge clk_i or negedge rst_i) begin
         else begin
             ALUResult_o     <=   32'b0;
             RS2data_o       <=   32'b0;
-            Zero_o          <=   1'b0;
-            pc_branch_o     <=   32'b0;
-            Branch_o        <=   1'b0;
             MemRead_o       <=   1'b0;
             MemtoReg_o      <=   1'b0;
             MemWrite_o      <=   1'b0;

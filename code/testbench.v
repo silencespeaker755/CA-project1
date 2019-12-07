@@ -50,12 +50,9 @@ initial begin
     CPU.Control.ALUSrc_o    = 1'b0;
     CPU.Control.RegWrite_o  = 1'b0;
     //IF_ID stage initialize
-    CPU.IF_ID.pc_o          =   32'b0;
-    CPU.IF_ID.instr_o       =   32'b0;
 
     //ID_EX stage initialize
     CPU.ID_EX.pc_o          =   32'b0;
-    CPU.ID_EX.Branch_o      =   1'b0;
     CPU.ID_EX.MemRead_o     =   1'b0;
     CPU.ID_EX.MemtoReg_o    =   1'b0;
     CPU.ID_EX.ALUOp_o       =   2'b0;
@@ -71,9 +68,6 @@ initial begin
     //EX_MEM stage initialize
     CPU.EX_MEM.ALUResult_o  =   32'b0;
     CPU.EX_MEM.RS2data_o    =   32'b0;
-    CPU.EX_MEM.Zero_o       =   1'b0;
-    CPU.EX_MEM.pc_branch_o  =   32'b0;
-    CPU.EX_MEM.Branch_o     =   1'b0;
     CPU.EX_MEM.MemRead_o    =   1'b0;
     CPU.EX_MEM.MemtoReg_o   =   1'b0;
     CPU.EX_MEM.MemWrite_o   =   1'b0;
