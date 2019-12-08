@@ -29,6 +29,7 @@ assign pc_o    = reg_pc_o;
 assign instr_o = reg_instr_o;
 
 initial begin
+#5
     reg_pc_o    = 32'b0;
     reg_instr_o = 32'b0;
 end

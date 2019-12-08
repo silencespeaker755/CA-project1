@@ -42,14 +42,16 @@ initial begin
 
     // TODO: initialize pipeline registers
     //Control signal initialize
-    CPU.Control.Branch_o    = 1'b0;
-    CPU.Control.MemRead_o   = 1'b0;
-    CPU.Control.MemtoReg_o  = 1'b0;
-    CPU.Control.ALUOp_o     = 2'b0;
-    CPU.Control.MemWrite_o  = 1'b0;
-    CPU.Control.ALUSrc_o    = 1'b0;
-    CPU.Control.RegWrite_o  = 1'b0;
+    CPU.Control.Branch    = 1'b0;
+    CPU.Control.MemRead   = 1'b0;
+    CPU.Control.MemtoReg  = 1'b0;
+    CPU.Control.ALUOp     = 2'b0;
+    CPU.Control.MemWrite  = 1'b0;
+    CPU.Control.ALUSrc    = 1'b0;
+    CPU.Control.RegWrite  = 1'b0;
     //IF_ID stage initialize
+    CPU.IF_ID.reg_pc_o    = 32'b0;
+    CPU.IF_ID.reg_instr_o = 32'b0;
 
     //ID_EX stage initialize
     CPU.ID_EX.pc_o          =   32'b0;
@@ -82,10 +84,10 @@ initial begin
     
      
     // Load instructions into instruction memory
-    $readmemb("../testdata/test.txt", CPU.Instruction_Memory.memory);
+    $readmemb("../testdata/instruction.txt", CPU.Instruction_Memory.memory);
     
     // Open output file
-    outfile = $fopen("../testdata/output.txt") | 1;
+    outfile = $fopen("../testdata/instruction_output.txt") | 1;
     
     // Set Input n into data memory at 0x00
     CPU.Data_Memory.memory[0] = 8'h5;       // n = 5 for example
@@ -100,6 +102,7 @@ initial begin
         
     
 end
+
   
 always@(posedge Clk) begin
     // TODO: change # of cycles as you need
@@ -107,8 +110,8 @@ always@(posedge Clk) begin
         $finish;
 
     // TODO: put in your own signal to count stall and flush
-    // if(CPU.HazardDetection.Stall_o == 1 && CPU.Control.Branch_o == 0)stall = stall + 1;
-    // if(CPU.HazardDetection.Flush_o == 1)flush = flush + 1;  
+    if(CPU.HazardDetection.stall_o == 1 && CPU.MUX7.Branch_o == 0)stall = stall + 1;
+    if(CPU.MUX7.Branch_o == 1)flush = flush + 1;  
    
 
     // print PC

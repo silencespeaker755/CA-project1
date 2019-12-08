@@ -60,8 +60,8 @@ wire    [9:0]   funct_ID;
 wire    [9:0]   funct_EX;
 // Parsing instr
 assign  Op              =   instr_ID[6:0];
-assign  RS1addr         =   instr_ID[19:15];
-assign  RS2addr         =   instr_ID[24:20];
+assign  RS1addr_ID      =   instr_ID[19:15];
+assign  RS2addr_ID      =   instr_ID[24:20];
 assign  RDaddr_ID       =   instr_ID[11:7];
 assign  funct_ID        =   {instr_ID[31:25], instr_ID[14:12]};
 // Control
@@ -212,6 +212,9 @@ Adder Adder2(
 );
 
 Control Control(
+    .clk_i          (clk_i),
+    .rst_i          (rst_i),
+    .start_i        (start_i),
     .Op_i           (Op),
     .Zero_i         (Zero_ID),
     .Branch_o       (Branch_ID_Control),
@@ -280,8 +283,8 @@ ID_EX ID_EX(
 // EX stage
 
 Forwarding Forwarding(
-    .EX_MEM_RegWrite      (MemtoReg_MEM),
-    .MEM_WB_RegWrite      (MemtoReg_WB),
+    .EX_MEM_RegWrite      (RegWrite_MEM),
+    .MEM_WB_RegWrite      (RegWrite_WB),
     .ID_EX_RS1addr_i      (RS1addr_EX),
     .ID_EX_RS2addr_i      (RS2addr_EX),
     .EX_MEM_RDaddr_i      (RDaddr_MEM),

@@ -1,5 +1,8 @@
 // Control unit sending control signals
 module Control(
+    clk_i,
+    rst_i,
+    start_i,
     Op_i,
     Zero_i,
     Branch_o,
@@ -12,31 +15,71 @@ module Control(
 );
 
 // Ports
-input           [6:0]   Op_i;
-input                   Zero_i;
-output  reg             Branch_o;
-output  reg             MemRead_o;
-output  reg             MemtoReg_o;
-output  reg     [1:0]   ALUOp_o;
-output  reg             MemWrite_o;
-output  reg             ALUSrc_o;
-output  reg             RegWrite_o;
+input               clk_i;
+input               rst_i;
+input               start_i;
+input       [6:0]   Op_i;
+input               Zero_i;
+output              Branch_o;
+output              MemRead_o;
+output              MemtoReg_o;
+output      [1:0]   ALUOp_o;
+output              MemWrite_o;
+output              ALUSrc_o;
+output              RegWrite_o;
+
+reg             Branch = 0;
+reg             MemRead = 0;
+reg             MemtoReg = 0;
+reg     [1:0]   ALUOp = 2'b00;
+reg             MemWrite = 0;
+reg             ALUSrc = 0;
+reg             RegWrite = 0;
+
+initial begin
+    $display("FUCK my Life");
+    Branch = 0;
+    MemRead = 0;
+    MemtoReg = 0;
+    ALUOp = 2'b00;
+    MemWrite = 0;
+    ALUSrc = 0;
+    RegWrite = 0;
+end
+/*
+always@(posedge clk_i or negedge rst_i) begin
+    Branch = 0;
+    MemRead = 0;
+    MemtoReg = 0;
+    ALUOp = 2'b00;
+    MemWrite = 0;
+    ALUSrc = 0;
+    RegWrite = 0;
+end
+*/
+assign Branch_o = Branch;
+assign MemRead_o = MemRead;
+assign MemtoReg_o = MemtoReg;
+assign ALUOp_o = ALUOp;
+assign MemWrite_o = MemWrite;
+assign ALUSrc_o = ALUSrc;
+assign RegWrite_o = RegWrite;
 
 // Assignment
 always@(Op_i) begin
-    Branch_o    =   ((Op_i == `BRANCH_TYPE) && Zero_i)?  1:0;
-    MemRead_o   =   (Op_i == `LOAD_TYPE)?    1:0;
-    MemtoReg_o  =   (Op_i == `LOAD_TYPE)?    `MEM:`REG;
-    ALUOp_o     =   (Op_i == `R_TYPE)?       `R_OP:
+    Branch    =   ((Op_i == `BRANCH_TYPE) && Zero_i)?  1:0;
+    MemRead   =   (Op_i == `LOAD_TYPE)?    1:0;
+    MemtoReg  =   (Op_i == `LOAD_TYPE)?    `MEM:`REG;
+    ALUOp     =   (Op_i == `R_TYPE)?       `R_OP:
                     (Op_i == `BRANCH_TYPE)?  `B_OP:
                     `OTHER_OP;
-    MemWrite_o  =   (Op_i == `STORE_TYPE)?   1:0;
-    ALUSrc_o    =   (Op_i == `R_TYPE)?       `REG:
+    MemWrite  =   (Op_i == `STORE_TYPE)?   1:0;
+    ALUSrc    =   (Op_i == `R_TYPE)?       `REG:
                     (Op_i == `I_TYPE)?       `IMM:
                     (Op_i == `LOAD_TYPE)?    `IMM:
                     (Op_i == `STORE_TYPE)?   `IMM:
                     (Op_i == `BRANCH_TYPE)?  `REG:0;
-    RegWrite_o  =   (Op_i == `R_TYPE)?       1:
+    RegWrite  =   (Op_i == `R_TYPE)?       1:
                     (Op_i == `I_TYPE)?       1:
                     (Op_i == `LOAD_TYPE)?    1:0;
 end
