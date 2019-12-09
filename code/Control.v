@@ -46,17 +46,7 @@ initial begin
     ALUSrc = 0;
     RegWrite = 0;
 end
-/*
-always@(posedge clk_i or negedge rst_i) begin
-    Branch = 0;
-    MemRead = 0;
-    MemtoReg = 0;
-    ALUOp = 2'b00;
-    MemWrite = 0;
-    ALUSrc = 0;
-    RegWrite = 0;
-end
-*/
+
 assign Branch_o = Branch;
 assign MemRead_o = MemRead;
 assign MemtoReg_o = MemtoReg;
@@ -65,9 +55,31 @@ assign MemWrite_o = MemWrite;
 assign ALUSrc_o = ALUSrc;
 assign RegWrite_o = RegWrite;
 
+reg judge = 0;
+
 // Assignment
-always@(Op_i) begin
-    Branch    =   ((Op_i == `BRANCH_TYPE) && Zero_i)?  1:0;
+always@(*) begin
+    if(Op_i == `BRANCH_TYPE) begin
+        judge = 1;
+    end
+    else begin
+        judge = 0;
+    end
+    $display("FUCK YOUR CODE %d %d",Zero_i,judge);
+    //Branch    =   ((Op_i == `BRANCH_TYPE) && Zero_i)?  1:0;
+    if(Op_i == `BRANCH_TYPE) begin
+        $display("FUCK MY LIFE");
+        if(Zero_i == 1) begin
+            $display("FUCK YOUR CODE %d",Zero_i);
+            Branch = 1;
+        end
+        else begin
+            Branch = 0;
+        end
+    end
+    else begin
+        Branch = 0;
+    end
     MemRead   =   (Op_i == `LOAD_TYPE)?    1:0;
     MemtoReg  =   (Op_i == `LOAD_TYPE)?    `MEM:`REG;
     ALUOp     =   (Op_i == `R_TYPE)?       `R_OP:

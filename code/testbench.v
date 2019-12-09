@@ -84,10 +84,12 @@ initial begin
     
      
     // Load instructions into instruction memory
-    $readmemb("../testdata/instruction.txt", CPU.Instruction_Memory.memory);
+    //$readmemb("../testdata/Fibonacci_instruction.txt", CPU.Instruction_Memory.memory);
+    $readmemb("../testdata/Fibonacci_instruction.txt", CPU.Instruction_Memory.memory);
     
     // Open output file
-    outfile = $fopen("../testdata/instruction_output.txt") | 1;
+    //outfile = $fopen("../testdata/Fibonacci_instruction_output.txt") | 1;
+    outfile = $fopen("../testdata/Fibonacci_instruction_output.txt") | 1;
     
     // Set Input n into data memory at 0x00
     CPU.Data_Memory.memory[0] = 8'h5;       // n = 5 for example
@@ -106,7 +108,7 @@ end
   
 always@(posedge Clk) begin
     // TODO: change # of cycles as you need
-    if(counter == 30)    // stop after 30 cycles
+    if(counter == 80)    // stop after 80 cycles
         $finish;
 
     // TODO: put in your own signal to count stall and flush
