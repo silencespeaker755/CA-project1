@@ -10,6 +10,13 @@
 
 3. Add Forwarding.v and HazardDection.v to handle data hazard and control hazard.
 
+# Work division
+*   Step 1: 50% done by 呂侑承, while the other 50% done by 洪佳生
+
+*   Step 2: 40% done by 呂侑承, 30% done by 洪佳生, while the other 30% done by 王靖傑 
+
+*   Step 3: 20% done by 呂侑承, 40% done by 洪佳生, while the other 40% done by 王靖傑
+
 # Implementation of CPU.v
 Declare input and output ports of each modules and connect their ports in CPU.v
 
@@ -134,4 +141,4 @@ In implemeting the basic CPU without pipelining,we encoutered a problem: When ru
 
 After adding pipeline register into CPU, we discovered that even if we initialize the pipeline register in testbench.v, after first cycle the value of some registers and wire are still x or z. We solved this problem by continuing initializing the pipeline registers until rst\_i is set to 1. By doing so, the registers in pipeline wouldn't be poluted by the value x in wires when the program just started. 
 
-My teamate likes to keep a good coding style so after we finish the whole program and it works,he renames the input/output wires and replace some wires by other modules' outputs. Besides,he deletes the registers not in pipeline registers that may be unnecessary In addition, he reconnects the outputs & inputs of HazardDetection.v and Forwarding.v to make the control flow simpler and more readable. To make a long story short(All in all),he did a great job but the original version still works well. When I discover that the whole new version of code isn't like what I wrote before, be honestly that I was very furious and a little upset. Maybe I am not good enough because maybe 70% things I did was reset by other.I know it isn't his fault but still feel anxiety. In conclusion,I have to say it really become more comprehensible for the reader."Good job ! bro !."
+My teamate likes to keep a good coding style so after we finish the whole program, he renames the input/output wires and replace some wires by other modules' outputs. Besides, he deletes the registers not in pipeline registers which is unneccasary. In addition, he reconnects the outputs & inputs of HazardDetection.v and Forwarding.v to make the control flow simpler and more readable.
