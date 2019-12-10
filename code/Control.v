@@ -28,16 +28,15 @@ output              MemWrite_o;
 output              ALUSrc_o;
 output              RegWrite_o;
 
-reg             Branch = 0;
-reg             MemRead = 0;
-reg             MemtoReg = 0;
-reg     [1:0]   ALUOp = 2'b00;
-reg             MemWrite = 0;
-reg             ALUSrc = 0;
-reg             RegWrite = 0;
+reg             Branch;
+reg             MemRead;
+reg             MemtoReg;
+reg     [1:0]   ALUOp;
+reg             MemWrite;
+reg             ALUSrc;
+reg             RegWrite;
 
 initial begin
-    $display("FUCK my Life");
     Branch = 0;
     MemRead = 0;
     MemtoReg = 0;
@@ -55,31 +54,9 @@ assign MemWrite_o = MemWrite;
 assign ALUSrc_o = ALUSrc;
 assign RegWrite_o = RegWrite;
 
-reg judge = 0;
-
 // Assignment
 always@(*) begin
-    if(Op_i == `BRANCH_TYPE) begin
-        judge = 1;
-    end
-    else begin
-        judge = 0;
-    end
-    $display("FUCK YOUR CODE %d %d",Zero_i,judge);
-    //Branch    =   ((Op_i == `BRANCH_TYPE) && Zero_i)?  1:0;
-    if(Op_i == `BRANCH_TYPE) begin
-        $display("FUCK MY LIFE");
-        if(Zero_i == 1) begin
-            $display("FUCK YOUR CODE %d",Zero_i);
-            Branch = 1;
-        end
-        else begin
-            Branch = 0;
-        end
-    end
-    else begin
-        Branch = 0;
-    end
+    Branch    =   ((Op_i == `BRANCH_TYPE) && Zero_i)?  1:0;
     MemRead   =   (Op_i == `LOAD_TYPE)?    1:0;
     MemtoReg  =   (Op_i == `LOAD_TYPE)?    `MEM:`REG;
     ALUOp     =   (Op_i == `R_TYPE)?       `R_OP:

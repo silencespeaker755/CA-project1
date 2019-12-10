@@ -105,7 +105,7 @@ initial begin
     
 end
 
-  
+
 always@(posedge Clk) begin
     // TODO: change # of cycles as you need
     if(counter == 80)    // stop after 80 cycles
@@ -113,7 +113,7 @@ always@(posedge Clk) begin
 
     // TODO: put in your own signal to count stall and flush
     if(CPU.HazardDetection.stall_o == 1 && CPU.MUX7.Branch_o == 0)stall = stall + 1;
-    if(CPU.MUX7.Branch_o == 1)flush = flush + 1;  
+    if(CPU.MUX7.Branch_o == 1)flush = flush + 1;
    
 
     // print PC

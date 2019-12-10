@@ -29,7 +29,7 @@ assign pc_o    = reg_pc_o;
 assign instr_o = reg_instr_o;
 
 initial begin
-#5
+#(`CYCLE_TIME/10)
     reg_pc_o    = 32'b0;
     reg_instr_o = 32'b0;
 end
@@ -49,23 +49,4 @@ always@(posedge clk_i) begin
     end
 end
 
-/*
-// Assignment
-always@(posedge clk_i or negedge rst_i) begin
-    if(~rst_i) begin
-        pc_o <= 32'b0;
-        instr_o <= 32'b0;
-    end
-    else begin
-        if(start_i) begin
-            pc_o <= pc_i;
-            instr_o <= instr_i;
-        end
-        else begin
-            pc_o <= 32'b0;
-            instr_o <= 32'b0;
-        end
-    end
-end
-*/
 endmodule
