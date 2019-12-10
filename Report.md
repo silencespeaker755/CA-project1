@@ -42,47 +42,43 @@
         According to the control signals,the write back data will be from data memory or from ALU result.
 
 # Implementation of each module
-PC:
+PC: Program counter, a register which stores the current position of instruction memory.
 
-Adder:
+Adder: Add the two input value and then output it.
 
-MUX32:
+MUX32: 32-bit multiplexer.
 
-Instruction_Memory:
+Instruction_Memory: A memory space to store instructions.
 
-IF_ID:
+IF_ID: We have two registers in it, storing current PC and instruction. If stall_i == 1, we remain it unchanged. If flush_in == 1, we flush the whole register.
 
-HazardDetection:
+HazardDetection: When the instruction in EX stage is lw, and the RD address is equal to RS1 or RS2 in ID stage, we output Hazard_o = 1, else Hazard_o = 0.
 
-Registers:
+Registers: 32-bit registers used to store data.
 
-Equal:
+Equal: It is used to determine whether RS1 is qual to RS2, when instruction == beq.
 
-Imm_Gen:
+Imm_Gen: Convert the instruction into immediate value according to each instruction formats. 
 
-Control:
+Control: Output each control signals according to the control table of each instruction.
 
-MUX7:
+MUX7: When hazard is detected, we flush all the control signals to generate a nop(no operation).
 
-ID_EX:
+ID_EX: The pipeline registers to store necessary data used in EX, MEM, WB stages.
 
-Forwarding:
+Forwarding: We have two kinds of forwarding, i.e. EX-forwarding and MEM-forwarding. We compare the RD with RS1 or RS2 to find out which type of forwarding appears, and send the control signal to MUX32_forwarding.
 
-MUX32_forwarding:
+MUX32_forwarding: The input contains the original RS1 or RS2, and the result from MEM stage and WB stage. We determine the output according to the type of forwaing.
 
-ALU_Control:
+ALU_Control: The signal to determine which ALU is performed.
 
-ALU:
+ALU: Arithmetic Logic Unit
 
-EX_MEM:
+EX_MEM: Store the necessary data for MEM and WB stage.
 
-Data_Memory:
+Data_Memory: write ALU result into Data memory or load Data memory into register.
 
-write ALU result into Data memory or load Data memory into register.
-
-MEM_WB:
-
-Transmit the signals from Data Memory stage to Write Back stage.
+MEM_WB: Transmit the signals from Data Memory stage to Write Back stage.
 
 # Dilemma
 when we wanted to implemet the basic CPU without pipelining,the register.v file which TA gave doesn't work in our code.
