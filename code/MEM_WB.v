@@ -33,28 +33,19 @@ output  reg [4:0]       RDaddr_o;
 
 // Assignment
 always@(posedge clk_i or negedge rst_i) begin
-    if(~rst_i) begin
+    if(start_i && rst_i) begin
+        RegWrite_o      <=   RegWrite_i;
+        Memdata_o       <=   Memdata_i;
+        ALUResult_o     <=   ALUResult_i;
+        MemtoReg_o      <=   MemtoReg_i;
+        RDaddr_o        <=   RDaddr_i;
+    end
+    else begin
         RegWrite_o      <=   1'b0;
         Memdata_o       <=   32'b0;
         ALUResult_o     <=   32'b0;
         MemtoReg_o      <=   1'b0;
         RDaddr_o        <=   5'b0;
-    end
-    else begin
-        if(start_i) begin
-            RegWrite_o      <=   RegWrite_i;
-            Memdata_o       <=   Memdata_i;
-            ALUResult_o     <=   ALUResult_i;
-            MemtoReg_o      <=   MemtoReg_i;
-            RDaddr_o        <=   RDaddr_i;
-        end
-        else begin
-            RegWrite_o      <=   1'b0;
-            Memdata_o       <=   32'b0;
-            ALUResult_o     <=   32'b0;
-            MemtoReg_o      <=   1'b0;
-            RDaddr_o        <=   5'b0;
-        end
     end
 end
 

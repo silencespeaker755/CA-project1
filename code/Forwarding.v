@@ -9,29 +9,8 @@ module Forwarding(
     output 	[1:0]	ALU_src2_select_o
 );
 
-reg [1:0]	ALU_select1;
-reg [1:0]	ALU_select2;
+assign ALU_src1_select_o    =   (EX_MEM_RegWrite && (EX_MEM_RDaddr_i != 5'b0) && (EX_MEM_RDaddr_i == ID_EX_RS1addr_i))? 2'b10 : (MEM_WB_RegWrite && (MEM_WB_RDaddr_i != 5'b0) && !(EX_MEM_RegWrite && (EX_MEM_RDaddr_i != 5'b0) && (EX_MEM_RDaddr_i == ID_EX_RS1addr_i)) && (MEM_WB_RDaddr_i == ID_EX_RS1addr_i))? 2'b01 : 2'b00;
 
-assign ALU_src1_select_o = ALU_select1;
-assign ALU_src2_select_o = ALU_select2;
-
-always @(*) begin
-	ALU_select1 = 2'b00;
-	ALU_select2 = 2'b00;
-	// EX hazard
-	if(EX_MEM_RegWrite && (EX_MEM_RDaddr_i != 5'b0) && (EX_MEM_RDaddr_i == ID_EX_RS1addr_i))
-		ALU_select1 = 2'b10;
-	if(EX_MEM_RegWrite && (EX_MEM_RDaddr_i != 5'b0) && (EX_MEM_RDaddr_i == ID_EX_RS2addr_i))
-		ALU_select2 = 2'b10;
-	// MEM hazard
-	if(MEM_WB_RegWrite && (MEM_WB_RDaddr_i != 5'b0) && 
-		!(EX_MEM_RegWrite && (EX_MEM_RDaddr_i != 5'b0) && (EX_MEM_RDaddr_i == ID_EX_RS1addr_i)) &&
-		(MEM_WB_RDaddr_i == ID_EX_RS1addr_i))
-		ALU_select1 = 2'b01;
-	if(MEM_WB_RegWrite && (MEM_WB_RDaddr_i != 5'b0) && 
-		!(EX_MEM_RegWrite && (EX_MEM_RDaddr_i != 5'b0) && (EX_MEM_RDaddr_i == ID_EX_RS2addr_i)) &&
-		(MEM_WB_RDaddr_i == ID_EX_RS2addr_i))
-		ALU_select2 = 2'b01;
-end
+assign ALU_src2_select_o    =   (EX_MEM_RegWrite && (EX_MEM_RDaddr_i != 5'b0) && (EX_MEM_RDaddr_i == ID_EX_RS2addr_i))? 2'b10 : (MEM_WB_RegWrite && (MEM_WB_RDaddr_i != 5'b0) && !(EX_MEM_RegWrite && (EX_MEM_RDaddr_i != 5'b0) && (EX_MEM_RDaddr_i == ID_EX_RS2addr_i)) && (MEM_WB_RDaddr_i == ID_EX_RS2addr_i))? 2'b01 : 2'b00;
 
 endmodule
