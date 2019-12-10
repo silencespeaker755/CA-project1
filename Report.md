@@ -42,25 +42,25 @@
         According to the control signals,the write back data will be from data memory or from ALU result.
 
 # Implementation of each module
-PC: 沒有改動
+PC:
 
-Adder: 把兩個input加起來output出去
+Adder:
 
-MUX32: 32位元的MUX
+MUX32:
 
-Instruction_Memory: 沒有改動
+Instruction_Memory:
 
-IF_ID: 存入pc還有instruction，然後加入stall還有flush兩個指令
+IF_ID:
 
-HazardDetection: 當EX_stage的指令是lw，並且RD等於ID_stage的RS1或RS2，發出hazard_detection
+HazardDetection:
 
-Registers: 沒有改動
+Registers:
 
-Equal: 當指令為beq時用來檢查RS1是否等於RS2
+Equal:
 
-Imm_Gen: 把各種instruction format的immediate值拔出來，並extend成32位元
+Imm_Gen:
 
-Control: 
+Control:
 
 MUX7:
 
@@ -78,4 +78,12 @@ EX_MEM:
 
 Data_Memory:
 
+write ALU result into Data memory or load Data memory into register.
+
 MEM_WB:
+
+Transmit the signals from Data Memory stage to Write Back stage.
+
+# Dilemma
+when we wanted to implemet the basic CPU without pipelining,the register.v file which TA gave doesn't work in our code.
+During the implementation in the same address of rd and (rs2 or rs1) ,such as "addi x7, x7, 6",the program wouldn't 
