@@ -207,12 +207,12 @@ ID_EX ID_EX(
 // EX stage
 
 Forwarding Forwarding(
-    .EX_MEM_RegWrite      (EX_MEM.RegWrite_o),
-    .MEM_WB_RegWrite      (MEM_WB.RegWrite_o),
-    .ID_EX_RS1addr_i      (ID_EX.RS1addr_o),
-    .ID_EX_RS2addr_i      (ID_EX.RS2addr_o),
-    .EX_MEM_RDaddr_i      (EX_MEM.RDaddr_o),
-    .MEM_WB_RDaddr_i      (MEM_WB.RDaddr_o),
+    .RegWrite_EX_MEM      (EX_MEM.RegWrite_o),
+    .RegWrite_MEM_WB      (MEM_WB.RegWrite_o),
+    .RS1addr_ID_EX_i      (ID_EX.RS1addr_o),
+    .RS2addr_ID_EX_i      (ID_EX.RS2addr_o),
+    .RDaddr_EX_MEM_i      (EX_MEM.RDaddr_o),
+    .RDaddr_MEM_WB_i      (MEM_WB.RDaddr_o),
     .ALU_src1_select_o    (),
     .ALU_src2_select_o    ()
 );
