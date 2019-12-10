@@ -14,9 +14,7 @@
 6. Each cycle in the Results of both of instruction.txt and Fibonacci\_instruction.txt are totally the same as TA's version.
 
 # TODO List
-0. Fix the naming style such that every wires' name end with \_IF, \_ID, \_EX, \_MEM and \_WB
-1. Rename the wire and make a good coding style.
-2. Report
+1. Report
 
 HW's Q&A
 https://cool.ntu.edu.tw/courses/340/assignments/4349
