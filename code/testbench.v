@@ -61,7 +61,7 @@ initial begin
     
 end
 
-  
+
 always@(posedge Clk) begin
     // TODO: change # of cycles as you need
     if(counter == 64)    // stop after 80 cycles
