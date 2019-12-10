@@ -34,214 +34,138 @@ input           start_i;
 
 parameter instr_length = 32'b100;
 // Wires and Registers
-// PC
-wire            PCWrite;
-wire            PCSrc;
-wire    [31:0]  pc_IF;
-wire    [31:0]  pc_ID;
-wire    [31:0]  pc_EX;
-wire    [31:0]  pc_next;
-wire    [31:0]  pc_branch_ID;
-
-wire    [31:0]  pc_plus_four;
 // Instr
-wire    [31:0]  instr_IF;
-wire    [31:0]  instr_ID;
-wire    [6:0]   Op;
+wire    [6:0]   Op_ID;
 wire    [4:0]   RS1addr_ID;
-wire    [4:0]   RS1addr_EX;
 wire    [4:0]   RS2addr_ID;
-wire    [4:0]   RS2addr_EX;
 wire    [4:0]   RDaddr_ID;
-wire    [4:0]   RDaddr_EX;
-wire    [4:0]   RDaddr_MEM;
-wire    [4:0]   RDaddr_WB;
 wire    [9:0]   funct_ID;
-wire    [9:0]   funct_EX;
 // Parsing instr
-assign  Op              =   instr_ID[6:0];
-assign  RS1addr_ID      =   instr_ID[19:15];
-assign  RS2addr_ID      =   instr_ID[24:20];
-assign  RDaddr_ID       =   instr_ID[11:7];
-assign  funct_ID        =   {instr_ID[31:25], instr_ID[14:12]};
-// Control
-wire            Branch_ID;
-wire            Branch_ID_Control;
-wire            MemRead_ID;
-wire            MemRead_ID_Control;
-wire            MemRead_EX;
-wire            MemRead_MEM;
-wire            MemtoReg_ID;
-wire            MemtoReg_ID_Control;
-wire            MemtoReg_EX;
-wire            MemtoReg_MEM;
-wire            MemtoReg_WB;
-wire    [1:0]   ALUOp_ID;
-wire    [1:0]   ALUOp_ID_Control;
-wire    [1:0]   ALUOp_EX;
-wire            MemWrite_ID;
-wire            MemWrite_ID_Control;
-wire            MemWrite_EX;
-wire            MemWrite_MEM;
-wire            ALUSrc_ID;
-wire            ALUSrc_ID_Control;
-wire            ALUSrc_EX;
-wire            RegWrite_ID;
-wire            RegWrite_ID_Control;
-wire            RegWrite_EX;
-wire            RegWrite_MEM;
-wire            RegWrite_WB;
-// Register and Immediate
-wire    [31:0]  RS1data_ID;
-wire    [31:0]  RS1data_EX;
-wire    [31:0]  RS2data_ID;
-wire    [31:0]  RS2data_EX;
-wire    [31:0]  RS2data_MEM;
-wire    [31:0]  RDdata;
-wire    [31:0]  imm_ID;
-wire    [31:0]  imm_EX;
-wire    [31:0]  RS2data_imm;
-// Shift
-wire    [31:0]  branch_offset;
-// ALU
-wire            Zero_ID;
-wire    [1:0]  ALU_src1_select_EX;
-wire    [1:0]  ALU_src2_select_EX;
-wire    [2:0]   ALUCtrl;
-wire    [31:0]  ALU_src1_EX;
-wire    [31:0]  ALU_src2_EX;
-wire    [31:0]  ALUResult_EX;
-wire    [31:0]  ALUResult_MEM;
-wire    [31:0]  ALUResult_WB;
-// Data Memory
-wire    [31:0]  Memdata_MEM;
-wire    [31:0]  Memdata_WB;
-// Hazard Detection
-wire            PCupdate_HD;
-wire            Hazard_HD;
-wire            stall_HD;
-
-// without pipeline
-assign PCWrite = 1;
-
+assign  Op_ID           =   IF_ID.instr_o[6:0];
+assign  RS1addr_ID      =   IF_ID.instr_o[19:15];
+assign  RS2addr_ID      =   IF_ID.instr_o[24:20];
+assign  RDaddr_ID       =   IF_ID.instr_o[11:7];
+assign  funct_ID        =   {IF_ID.instr_o[31:25], IF_ID.instr_o[14:12]};
 
 // Module declaration
 // IF stage
-
 PC PC(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
-    .start_i        ((start_i && PCupdate_HD)),        // TODO
-    .PCWrite_i      (PCWrite),      // TODO
-    .pc_i           (pc_next),
-    .pc_o           (pc_IF)
+    .start_i        (start_i),
+    .PCWrite_i      (HazardDetection.PCWrite_o),
+    .pc_i           (PC_MUX32.data_o),
+    .pc_o           ()
 );
 
 Adder Adder1(
-    .data1_in       (pc_IF),
+    .data1_in       (PC.pc_o),
     .data2_in       (instr_length),
-    .data_o         (pc_plus_four)
+    .data_o         ()
 );
 
 MUX32 PC_MUX32(
-    .data1_i        (pc_plus_four),
-    .data2_i        (pc_branch_ID),
-    .select_i       (Branch_ID),
-    .data_o         (pc_next)
+    .data1_i        (Adder1.data_o),
+    .data2_i        (Adder2.data_o),
+    .select_i       (MUX7.Branch_o),
+    .data_o         ()
 );
 
 Instruction_Memory Instruction_Memory(
-    .addr_i         (pc_IF),
-    .instr_o        (instr_IF)
+    .addr_i         (PC.pc_o),
+    .instr_o        ()
 );
 // IF/ID pipeline register
 IF_ID IF_ID(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
     .start_i        (start_i),
-    .stall_i        (stall_HD),
-    .flush_i        (Branch_ID),
-    .pc_i           (pc_IF),
-    .instr_i        (instr_IF),
-    .pc_o           (pc_ID),
-    .instr_o        (instr_ID)
+    .IF_IDWrite_i   (HazardDetection.IF_IDWrite_o),
+    .IF_IDflush_i   (HazardDetection.IF_IDflush_o),
+    .pc_i           (PC.pc_o),
+    .instr_i        (Instruction_Memory.instr_o),
+    .pc_o           (),
+    .instr_o        ()
 );
 // ID stage
 
 HazardDetection HazardDetection(
-    .MemRead_EX_i   (MemRead_EX),
+    .MemRead_EX_i   (ID_EX.MemRead_o),
     .RS1addr_ID_i   (RS1addr_ID),
     .RS2addr_ID_i   (RS2addr_ID),
-    .RDaddr_EX_i    (RDaddr_EX),
-    .PCupdate_o     (PCupdate_HD),
-    .Hazard_o       (Hazard_HD),
-    .stall_o        (stall_HD)
+    .RDaddr_EX_i    (ID_EX.RDaddr_o),
+    .Branch_i       (Control.Branch_o),
+    .stall_o        (),
+    .PCWrite_o      (),
+    .IF_IDWrite_o   (),
+    .IDflush_o      (),
+    .IF_IDflush_o   ()
 );
 
 Registers Registers(
     .clk_i          (clk_i),
     .RS1addr_i      (RS1addr_ID),
     .RS2addr_i      (RS2addr_ID),
-    .RDaddr_i       (RDaddr_WB),
-    .RDdata_i       (RDdata),
-    .RegWrite_i     (RegWrite_WB),
-    .RS1data_o      (RS1data_ID),
-    .RS2data_o      (RS2data_ID)
+    .RDaddr_i       (MEM_WB.RDaddr_o),
+    .RDdata_i       (ALU_MEM_MUX32.data_o),
+    .RegWrite_i     (MEM_WB.RegWrite_o),
+    .RS1data_o      (),
+    .RS2data_o      ()
 );
 
 Equal Equal(
-    .RS1_i(RS1data_ID),
-    .RS2_i(RS2data_ID),
-    .Zero_o(Zero_ID)
+    .data1_i(Registers.RS1data_o),
+    .data2_i(Registers.RS2data_o),
+    .Zero_o()
 );
 
 Imm_Gen Imm_Gen(
-    .data_i         (instr_ID),
-    .data_o         (imm_ID)
+    .data_i         (IF_ID.instr_o),
+    .data_o         ()
 );
 
 Shift Shift(
-    .data_i         (imm_ID),
-    .data_o         (branch_offset)
+    .data_i         (Imm_Gen.data_o),
+    .data_o         ()
 );
 
 Adder Adder2(
-    .data1_in       (pc_ID),
-    .data2_in       (branch_offset),
-    .data_o         (pc_branch_ID)
+    .data1_in       (IF_ID.pc_o),
+    .data2_in       (Shift.data_o),
+    .data_o         ()
 );
 
 Control Control(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
     .start_i        (start_i),
-    .Op_i           (Op),
-    .Zero_i         (Zero_ID),
-    .Branch_o       (Branch_ID_Control),
-    .MemRead_o      (MemRead_ID_Control),
-    .MemtoReg_o     (MemtoReg_ID_Control),
-    .ALUOp_o        (ALUOp_ID_Control),
-    .MemWrite_o     (MemWrite_ID_Control),
-    .ALUSrc_o       (ALUSrc_ID_Control),
-    .RegWrite_o     (RegWrite_ID_Control)
+    .Op_i           (Op_ID),
+    .Zero_i         (Equal.Zero_o),
+    .Branch_o       (),
+    .MemRead_o      (),
+    .MemtoReg_o     (),
+    .ALUOp_o        (),
+    .MemWrite_o     (),
+    .ALUSrc_o       (),
+    .RegWrite_o     ()
 );
 
 MUX7 MUX7(
-    .IsHazard_i     (Hazard_HD),                     //TODO
-    .Branch_i       (Branch_ID_Control),
-    .MemRead_i      (MemRead_ID_Control),
-    .MemtoReg_i     (MemtoReg_ID_Control),
-    .ALUOp_i        (ALUOp_ID_Control),
-    .MemWrite_i     (MemWrite_ID_Control),
-    .ALUSrc_i       (ALUSrc_ID_Control),
-    .RegWrite_i     (RegWrite_ID_Control),
-    .Branch_o       (Branch_ID),
-    .MemRead_o      (MemRead_ID),
-    .MemtoReg_o     (MemtoReg_ID),
-    .ALUOp_o        (ALUOp_ID),
-    .MemWrite_o     (MemWrite_ID),
-    .ALUSrc_o       (ALUSrc_ID),
-    .RegWrite_o     (RegWrite_ID)
+    .flush_i        (HazardDetection.IDflush_o),
+    .Branch_i       (Control.Branch_o),
+    .MemRead_i      (Control.MemRead_o),
+    .MemtoReg_i     (Control.MemtoReg_o),
+    .ALUOp_i        (Control.ALUOp_o),
+    .MemWrite_i     (Control.MemWrite_o),
+    .ALUSrc_i       (Control.ALUSrc_o),
+    .RegWrite_i     (Control.RegWrite_o),
+    .Branch_o       (),
+    .MemRead_o      (),
+    .MemtoReg_o     (),
+    .ALUOp_o        (),
+    .MemWrite_o     (),
+    .ALUSrc_o       (),
+    .RegWrite_o     ()
 );
 
 // ID/EX pipeline register
@@ -249,85 +173,85 @@ ID_EX ID_EX(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
     .start_i        (start_i),
-    .pc_i           (pc_ID),
-    .MemRead_i      (MemRead_ID),
-    .MemtoReg_i     (MemtoReg_ID),
-    .ALUOp_i        (ALUOp_ID),
-    .MemWrite_i     (MemWrite_ID),
-    .ALUSrc_i       (ALUSrc_ID),
-    .RegWrite_i     (RegWrite_ID),
-    .RS1data_i      (RS1data_ID),
-    .RS2data_i      (RS2data_ID),
-    .imm_i          (imm_ID),
+    .pc_i           (IF_ID.pc_o),
+    .MemRead_i      (MUX7.MemRead_o),
+    .MemtoReg_i     (MUX7.MemtoReg_o),
+    .ALUOp_i        (MUX7.ALUOp_o),
+    .MemWrite_i     (MUX7.MemWrite_o),
+    .ALUSrc_i       (MUX7.ALUSrc_o),
+    .RegWrite_i     (MUX7.RegWrite_o),
+    .RS1data_i      (Registers.RS1data_o),
+    .RS2data_i      (Registers.RS2data_o),
+    .imm_i          (Imm_Gen.data_o),
     .funct_i        (funct_ID),
     .RDaddr_i       (RDaddr_ID),
     .RS1addr_i      (RS1addr_ID),
     .RS2addr_i      (RS2addr_ID),
 
-    .pc_o           (pc_EX),
-    .MemRead_o      (MemRead_EX),
-    .MemtoReg_o     (MemtoReg_EX),
-    .ALUOp_o        (ALUOp_EX),
-    .MemWrite_o     (MemWrite_EX),
-    .ALUSrc_o       (ALUSrc_EX),
-    .RegWrite_o     (RegWrite_EX),
-    .RS1data_o      (RS1data_EX),
-    .RS2data_o      (RS2data_EX),
-    .imm_o          (imm_EX),
-    .funct_o        (funct_EX),
-    .RDaddr_o       (RDaddr_EX),
-    .RS1addr_o      (RS1addr_EX),
-    .RS2addr_o      (RS2addr_EX)
+    .pc_o           (),
+    .MemRead_o      (),
+    .MemtoReg_o     (),
+    .ALUOp_o        (),
+    .MemWrite_o     (),
+    .ALUSrc_o       (),
+    .RegWrite_o     (),
+    .RS1data_o      (),
+    .RS2data_o      (),
+    .imm_o          (),
+    .funct_o        (),
+    .RDaddr_o       (),
+    .RS1addr_o      (),
+    .RS2addr_o      ()
 );
 // forwarding input : RS1addr_EX, RS2addr_EX
 // EX stage
 
 Forwarding Forwarding(
-    .EX_MEM_RegWrite      (RegWrite_MEM),
-    .MEM_WB_RegWrite      (RegWrite_WB),
-    .ID_EX_RS1addr_i      (RS1addr_EX),
-    .ID_EX_RS2addr_i      (RS2addr_EX),
-    .EX_MEM_RDaddr_i      (RDaddr_MEM),
-    .MEM_WB_RDaddr_i      (RDaddr_WB),
-    .ALU_src1_select_o    (ALU_src1_select_EX),
-    .ALU_src2_select_o    (ALU_src2_select_EX)
+    .RegWrite_EX_MEM      (EX_MEM.RegWrite_o),
+    .RegWrite_MEM_WB      (MEM_WB.RegWrite_o),
+    .RS1addr_ID_EX_i      (ID_EX.RS1addr_o),
+    .RS2addr_ID_EX_i      (ID_EX.RS2addr_o),
+    .RDaddr_EX_MEM_i      (EX_MEM.RDaddr_o),
+    .RDaddr_MEM_WB_i      (MEM_WB.RDaddr_o),
+    .ALUSrc1_select_o    (),
+    .ALUSrc2_select_o    ()
 );
 
 MUX32_forwarding RS1_forwarding_MUX(
-    .data_EX_i      (RS1data_EX),
-    .ALUreult_MEM_i (ALUResult_MEM),
-    .RDdata_WB_i    (RDdata),
-    .select_i       (ALU_src1_select_EX),
-    .data_o         (ALU_src1_EX)
+    .data_EX_i      (ID_EX.RS1data_o),
+    .ALUreult_MEM_i (EX_MEM.ALUResult_o),
+    .RDdata_WB_i    (ALU_MEM_MUX32.data_o),
+    .select_i       (Forwarding.ALUSrc1_select_o),
+    .data_o         ()
 );
 
 
 MUX32_forwarding RS2_forwarding_MUX(
-    .data_EX_i      (RS2data_EX),
-    .ALUreult_MEM_i (ALUResult_MEM),
-    .RDdata_WB_i    (RDdata),
-    .select_i       (ALU_src2_select_EX),
-    .data_o         (ALU_src2_EX)
+    .data_EX_i      (ID_EX.RS2data_o),
+    .ALUreult_MEM_i (EX_MEM.ALUResult_o),
+    .RDdata_WB_i    (ALU_MEM_MUX32.data_o),
+    .select_i       (Forwarding.ALUSrc2_select_o),
+    .data_o         ()
 );
 
 MUX32 RS2_IMM_MUX32(
-    .data1_i        (ALU_src2_EX),
-    .data2_i        (imm_EX),
-    .select_i       (ALUSrc_EX),
-    .data_o         (RS2data_imm)
+    .data1_i        (RS2_forwarding_MUX.data_o),
+    .data2_i        (ID_EX.imm_o),
+    .select_i       (ID_EX.ALUSrc_o),
+    .data_o         ()
 );
 
 ALU_Control ALU_Control(
-    .funct_i        (funct_EX),
-    .ALUOp_i        (ALUOp_EX),
-    .ALUCtrl_o      (ALUCtrl)
+    .funct_i        (ID_EX.funct_o),
+    .ALUOp_i        (ID_EX.ALUOp_o),
+    .ALUCtrl_o      ()
 );
 
 ALU ALU(
-    .data1_i        (ALU_src1_EX),
-    .data2_i        (RS2data_imm),
-    .ALUCtrl_i      (ALUCtrl),
-    .data_o         (ALUResult_EX)
+    .data1_i        (RS1_forwarding_MUX.data_o),
+    .data2_i        (RS2_IMM_MUX32.data_o),
+    .ALUCtrl_i      (ALU_Control.ALUCtrl_o),
+    .data_o         ()
 );
 
 // EX_MEM pipeline register
@@ -335,31 +259,31 @@ EX_MEM EX_MEM(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
     .start_i        (start_i),
-    .ALUResult_i    (ALUResult_EX),
-    .RS2data_i      (ALU_src2_EX),
-    .MemRead_i      (MemRead_EX),
-    .MemtoReg_i     (MemtoReg_EX),
-    .MemWrite_i     (MemWrite_EX),
-    .RegWrite_i     (RegWrite_EX),
-    .RDaddr_i       (RDaddr_EX),
+    .ALUResult_i    (ALU.data_o),
+    .RS2data_i      (RS2_forwarding_MUX.data_o),
+    .MemRead_i      (ID_EX.MemRead_o),
+    .MemtoReg_i     (ID_EX.MemtoReg_o),
+    .MemWrite_i     (ID_EX.MemWrite_o),
+    .RegWrite_i     (ID_EX.RegWrite_o),
+    .RDaddr_i       (ID_EX.RDaddr_o),
 
-    .ALUResult_o    (ALUResult_MEM),
-    .RS2data_o      (RS2data_MEM),
-    .MemRead_o      (MemRead_MEM),
-    .MemtoReg_o     (MemtoReg_MEM),
-    .MemWrite_o     (MemWrite_MEM),
-    .RegWrite_o     (RegWrite_MEM),
-    .RDaddr_o       (RDaddr_MEM)
+    .ALUResult_o    (),
+    .RS2data_o      (),
+    .MemRead_o      (),
+    .MemtoReg_o     (),
+    .MemWrite_o     (),
+    .RegWrite_o     (),
+    .RDaddr_o       ()
 );
 
 
 // MEM stage
 Data_Memory Data_Memory(
     .clk_i          (clk_i),
-    .addr_i         (ALUResult_MEM),
-    .MemWrite_i     (MemWrite_MEM),
-    .data_i         (RS2data_MEM),
-    .data_o         (Memdata_MEM)
+    .addr_i         (EX_MEM.ALUResult_o),
+    .MemWrite_i     (EX_MEM.MemWrite_o),
+    .data_i         (EX_MEM.RS2data_o),
+    .data_o         ()
 );
 
 // MEM_WB pipeline register
@@ -367,25 +291,25 @@ MEM_WB MEM_WB(
     .clk_i          (clk_i),
     .rst_i          (rst_i),
     .start_i        (start_i),
-    .RegWrite_i     (RegWrite_MEM),
-    .Memdata_i      (Memdata_MEM),
-    .ALUResult_i    (ALUResult_MEM),
-    .MemtoReg_i     (MemtoReg_MEM),
-    .RDaddr_i       (RDaddr_MEM),
+    .RegWrite_i     (EX_MEM.RegWrite_o),
+    .Memdata_i      (Data_Memory.data_o),
+    .ALUResult_i    (EX_MEM.ALUResult_o),
+    .MemtoReg_i     (EX_MEM.MemtoReg_o),
+    .RDaddr_i       (EX_MEM.RDaddr_o),
 
-    .RegWrite_o     (RegWrite_WB),
-    .Memdata_o      (Memdata_WB),
-    .ALUResult_o    (ALUResult_WB),
-    .MemtoReg_o     (MemtoReg_WB),
-    .RDaddr_o       (RDaddr_WB)
+    .RegWrite_o     (),
+    .Memdata_o      (),
+    .ALUResult_o    (),
+    .MemtoReg_o     (),
+    .RDaddr_o       ()
 );
 
 // WB stage
 MUX32 ALU_MEM_MUX32(
-    .data1_i        (ALUResult_WB),
-    .data2_i        (Memdata_WB),
-    .select_i       (MemtoReg_WB),
-    .data_o         (RDdata)
+    .data1_i        (MEM_WB.ALUResult_o),
+    .data2_i        (MEM_WB.Memdata_o),
+    .select_i       (MEM_WB.MemtoReg_o),
+    .data_o         ()
 );
 
 endmodule
