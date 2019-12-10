@@ -86,4 +86,8 @@ Transmit the signals from Data Memory stage to Write Back stage.
 
 # Dilemma
 when we wanted to implemet the basic CPU without pipelining,the register.v file which TA gave doesn't work in our code.
-During the implementation in the same address of rd and (rs2 or rs1) ,such as "addi x7, x7, 6",the program wouldn't 
+During the implementation in the same address of rd and (rs2 or rs1) ,such as "addi x7, x7, 6",the program wouldn't stop so in this step we replace single cycle's register.v into project1's register.v.
+
+when we added pipeline register stage into CPU and implement it,we discovered that if we don't initialize the pipeline register,then there would be some x or z that appear in some wires or registers after cycle 1.We solved this problem by consistently initializing the pipeline registers when rst is 0.
+
+My teamate would like to keep a good coding style so after we finish the whole program and it works,he renames the wire and replace them by modules' outputs.Besides,he deletes the additional registers that may not be necessarily after the change and,in a little part of the code,reconnects the outputs & inputs in different way. To make a long story short(All in all),he did a great job but in the original version it still works good.When I discover that the whole new version of code isn't like what I wrote before,be honestly that I was very furious and a little upset.Maybe I am not suitable for this team because almost everything I did was reset by the other.
