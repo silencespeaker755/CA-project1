@@ -43,6 +43,11 @@ Declare input and output ports of each modules and connect their ports in CPU.v
         
         According to the control signals,the write back data will be from data memory or from ALU result.
 
+# Change of testbench.v
+* Uncomment lines including Reset
+
+    Pass Reset to rst_i of CPU.v to solve some problems(mention later).
+
 # Implementation of each module
 * PC: 
 
@@ -119,6 +124,10 @@ Declare input and output ports of each modules and connect their ports in CPU.v
 * MEM\_WB: 
 
     Transmit the signals from Data Memory stage to Write Back stage.
+
+* Note:
+
+    In all the pipeline registers, IF_ID, ID_EX, EX_MEM and MEM_WB, we use rst_i to determine the time to get the input value from input port in "first cycle". By doing so, we could avoid the registers in pipeline registers from being polluted by the undetermined value x\(z\) of wires during first cycle.
 
 # Encountered Problems
 In implemeting the basic CPU without pipelining,we encoutered a problem: When running arithmetic commands with rd and rs1\(2\) pointing to the same register such as "addi x7, x7, 6",the ALU causes some problem causing the program shut down before going to the next cycle. It turns out that the Registers.v file provided in project is customized for pipelined CPU which doesn't work well with our first version code.
