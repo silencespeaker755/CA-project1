@@ -17,6 +17,11 @@
 
 *   Step 3: 20% done by 呂侑承, 40% done by 洪佳生, while the other 40% done by 王靖傑
 
+# Program usage
+*   Compile command: $ make
+
+*   Execute compiled file: $ ./CPU.out
+
 # Implementation of CPU.v
 Declare input and output ports of each modules and connect their ports in CPU.v
 
@@ -51,9 +56,13 @@ Declare input and output ports of each modules and connect their ports in CPU.v
         According to the control signals,the write back data will be from data memory or from ALU result.
 
 # Change of testbench.v
-* Uncomment lines including Reset
+* Uncomment lines including Reset:
 
     Pass Reset to rst_i of CPU.v to solve some problems(mention later).
+
+* Output a debug.vcd file
+
+    Insert two line of code to generate debug.vcd file.
 
 # Implementation of each module
 * PC: 
@@ -74,11 +83,12 @@ Declare input and output ports of each modules and connect their ports in CPU.v
 
 * IF\_ID: 
 
-    We have two registers in it, storing current PC and instruction. If stall_i == 1, we remain it unchanged. If flush_i == 1, we flush the whole register.
+    We have two registers in it, storing current PC and instruction. If IF_IDWrite_i == 0, we don't change registers' values. If IF_IDflush_i == 1, we flush the registers' values.
 
 * HazardDetection: 
 
-    When the instruction in EX stage is lw, and the RD address is equal to RS1 or RS2 in ID stage, we output Hazard_o = 1, else Hazard_o = 0.
+    When the instruction in EX stage is lw, and the RD address is equal to either RS1 or RS2 in ID stage, we set stall_o = 1, PCWrite_o = 0, IF_IDWrite_o = 0 and IDflush_o = 1 to stall the commands in IF_ID pipeline register and insert a bubble command into ID stage.
+    When the instruction in ID stage is beq and RS1_data == RS2_data, we set IF_IDflush_o = 1 to flush the command in IF_ID pipeline register since that command don't have to execute.
 
 * Registers: 
 

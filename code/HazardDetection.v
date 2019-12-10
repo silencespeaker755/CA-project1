@@ -14,7 +14,7 @@ module HazardDetection(
 assign stall_o      = (MemRead_EX_i && ((RS1addr_ID_i == RDaddr_EX_i) || (RS2addr_ID_i == RDaddr_EX_i))) ? 1 : 0;
 assign PCWrite_o    = ~stall_o;
 assign IF_IDWrite_o = ~stall_o;
-assign IDflush_o   = stall_o;
-assign IF_IDflush_o= Branch_i;
+assign IDflush_o    = stall_o;
+assign IF_IDflush_o = Branch_i;
 
 endmodule
