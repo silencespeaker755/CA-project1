@@ -23,24 +23,24 @@
 # Implementation of CPU.v
 
 # Implementation of each module
-PC:
+PC: 沒有改動
 
-Adder:
+Adder: 把兩個input加起來output出去
 
-MUX32:
-Instruction_Memory:
+MUX32: 32位元的MUX
+Instruction_Memory: 沒有改動
 
-IF_ID:
+IF_ID: 存入pc還有instruction，然後加入stall還有flush兩個指令
 
-HazardDetection:
+HazardDetection: 當EX_stage的指令是lw，並且RD等於ID_stage的RS1或RS2，發出hazard_detection
 
-Registers:
+Registers: 沒有改動
 
-Equal:
+Equal: 當指令為beq時用來檢查RS1是否等於RS2
 
-Imm_Gen:
+Imm_Gen: 把各種instruction format的immediate值拔出來，並extend成32位元
 
-Control:
+Control: 
 
 MUX7:
 
