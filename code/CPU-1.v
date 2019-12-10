@@ -81,7 +81,7 @@ IF_ID IF_ID(
     .rst_i          (rst_i),
     .start_i        (start_i),
     .IF_IDWrite_i   (HazardDetection.IF_IDWrite_o),
-    .flush_i        (HazardDetection.IF_IDflush_o),
+    .IF_IDflush_i   (HazardDetection.IF_IDflush_o),
     .pc_i           (PC.pc_o),
     .instr_i        (Instruction_Memory.instr_o),
     .pc_o           (),
@@ -213,15 +213,15 @@ Forwarding Forwarding(
     .ID_EX_RS2addr_i      (ID_EX.RS2addr_o),
     .EX_MEM_RDaddr_i      (EX_MEM.RDaddr_o),
     .MEM_WB_RDaddr_i      (MEM_WB.RDaddr_o),
-    .ALU_src1_select_o    (),
-    .ALU_src2_select_o    ()
+    .ALUSrc1_select_o    (),
+    .ALUSrc2_select_o    ()
 );
 
 MUX32_forwarding RS1_forwarding_MUX(
     .data_EX_i      (ID_EX.RS1data_o),
     .ALUreult_MEM_i (EX_MEM.ALUResult_o),
     .RDdata_WB_i    (ALU_MEM_MUX32.data_o),
-    .select_i       (Forwarding.ALU_src1_select_o),
+    .select_i       (Forwarding.ALUSrc1_select_o),
     .data_o         ()
 );
 
@@ -230,7 +230,7 @@ MUX32_forwarding RS2_forwarding_MUX(
     .data_EX_i      (ID_EX.RS2data_o),
     .ALUreult_MEM_i (EX_MEM.ALUResult_o),
     .RDdata_WB_i    (ALU_MEM_MUX32.data_o),
-    .select_i       (Forwarding.ALU_src2_select_o),
+    .select_i       (Forwarding.ALUSrc2_select_o),
     .data_o         ()
 );
 
