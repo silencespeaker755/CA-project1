@@ -11,7 +11,7 @@
 3. Support basic command without pipeline
 4. Connect wire between stages and pipeline registers in CPU.v 
 5. Support basic command with pipeline(verified)
-6. Each cycle in the Results of both of instruction.txt and Fibonacci_instruction.txt are totally the same as TA's version.
+6. Each cycle in the Results of both of instruction.txt and Fibonacci\_instruction.txt are totally the same as TA's version.
 
 # TODO List
 0. Fix the naming style such that every wires' name end with \_IF, \_ID, \_EX, \_MEM and \_WB

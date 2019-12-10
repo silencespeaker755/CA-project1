@@ -40,56 +40,12 @@ initial begin
         CPU.Registers.register[i] = 32'b0;
     end
 
-    // TODO: initialize pipeline registers
-    //Control signal initialize
-    CPU.Control.Branch    = 1'b0;
-    CPU.Control.MemRead   = 1'b0;
-    CPU.Control.MemtoReg  = 1'b0;
-    CPU.Control.ALUOp     = 2'b0;
-    CPU.Control.MemWrite  = 1'b0;
-    CPU.Control.ALUSrc    = 1'b0;
-    CPU.Control.RegWrite  = 1'b0;
-    //IF_ID stage initialize
-    CPU.IF_ID.reg_pc_o    = 32'b0;
-    CPU.IF_ID.reg_instr_o = 32'b0;
-
-    //ID_EX stage initialize
-    CPU.ID_EX.pc_o          =   32'b0;
-    CPU.ID_EX.MemRead_o     =   1'b0;
-    CPU.ID_EX.MemtoReg_o    =   1'b0;
-    CPU.ID_EX.ALUOp_o       =   2'b0;
-    CPU.ID_EX.MemWrite_o    =   1'b0;
-    CPU.ID_EX.ALUSrc_o      =   1'b0;
-    CPU.ID_EX.RegWrite_o    =   1'b0;
-    CPU.ID_EX.funct_o       =   10'b0;
-    CPU.ID_EX.RS1data_o     =   32'b0;
-    CPU.ID_EX.RS2data_o     =   32'b0;
-    CPU.ID_EX.imm_o         =   32'b0;
-    CPU.ID_EX.RDaddr_o      =   5'b0;
-
-    //EX_MEM stage initialize
-    CPU.EX_MEM.ALUResult_o  =   32'b0;
-    CPU.EX_MEM.RS2data_o    =   32'b0;
-    CPU.EX_MEM.MemRead_o    =   1'b0;
-    CPU.EX_MEM.MemtoReg_o   =   1'b0;
-    CPU.EX_MEM.MemWrite_o   =   1'b0;
-    CPU.EX_MEM.RegWrite_o   =   1'b0;
-    CPU.EX_MEM.RDaddr_o     =   5'b0;
-    //MEM_WB stage initialize
-    CPU.MEM_WB.RegWrite_o   =   1'b0;
-    CPU.MEM_WB.Memdata_o    =   32'b0;
-    CPU.MEM_WB.ALUResult_o  =   32'b0;
-    CPU.MEM_WB.MemtoReg_o   =   1'b0;
-    CPU.MEM_WB.RDaddr_o     =   5'b0;
-    
-     
     // Load instructions into instruction memory
+    $readmemb("../testdata/instruction.txt", CPU.Instruction_Memory.memory);
     //$readmemb("../testdata/Fibonacci_instruction.txt", CPU.Instruction_Memory.memory);
-    $readmemb("../testdata/Fibonacci_instruction.txt", CPU.Instruction_Memory.memory);
     
     // Open output file
-    //outfile = $fopen("../testdata/Fibonacci_instruction_output.txt") | 1;
-    outfile = $fopen("../testdata/Fibonacci_instruction_output.txt") | 1;
+    outfile = $fopen("../testdata/output.txt") | 1;
     
     // Set Input n into data memory at 0x00
     CPU.Data_Memory.memory[0] = 8'h5;       // n = 5 for example
@@ -108,13 +64,14 @@ end
 
 always@(posedge Clk) begin
     // TODO: change # of cycles as you need
-    if(counter == 80)    // stop after 80 cycles
+    if(counter == 64)    // stop after 80 cycles
         $finish;
 
     // TODO: put in your own signal to count stall and flush
-    if(CPU.HazardDetection.stall_o == 1 && CPU.MUX7.Branch_o == 0)stall = stall + 1;
-    if(CPU.MUX7.Branch_o == 1)flush = flush + 1;
-   
+    if(CPU.HazardDetection.stall_o == 1)
+        stall = stall + 1;
+    if(CPU.HazardDetection.IF_IDflush_o == 1)
+        flush = flush + 1;  
 
     // print PC
     $fdisplay(outfile, "cycle = %d, Start = %d, Stall = %d, Flush = %d\nPC = %d", counter, Start, stall, flush, CPU.PC.pc_o);
