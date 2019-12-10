@@ -32,11 +32,13 @@
         According to the result of Forwarding,MUX32_forwarding will which source of data been uesd in ALU.
 
 *    Data Memory
+        
         包含Data_Memory.v
         
         According to the control signals,Whether the ALU result will be stored into memory and whether data will be loaded from the memory will be decided and implemented.
 
 *    Write Back
+        
         包含MUX32.v
         
         According to the control signals,the write back data will be from data memory or from ALU result.
